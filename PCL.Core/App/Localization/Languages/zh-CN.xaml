@@ -813,6 +813,10 @@
 
     <sys:String x:Key="Instance.Export.Error.OperationFailed">实例导出操作失败。请查看错误详情。</sys:String>
     <sys:String x:Key="Instance.Export.ExportTask.Prefix">导出整合包：</sys:String>
+    <sys:String x:Key="Instance.Export.Format">导出格式</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Modrinth">Modrinth（.mrpack）</sys:String>
+    <sys:String x:Key="Instance.Export.Format.MultiMC">MultiMC / Prism（.zip）</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Mcbbs">MCBBS（.zip）</sys:String>
     <sys:String x:Key="Instance.Export.ModrinthWarning">受 Modrinth 整合包规范限制，导出的整合包中不会包含 OptiFine。</sys:String>
     <sys:String x:Key="Instance.Export.MrpackFilter">Modrinth 整合包文件(*.mrpack)|*.mrpack</sys:String>
     <sys:String x:Key="Instance.Export.NetCheckAllFailed.Message">联网获取文件信息失败，是否继续导出？&#xA;&#xA;若继续，所有文件都将被直接打包。&#xA;由于二次分发可能违反使用协议，请尽量不要公开发布导出的整合包！</sys:String>

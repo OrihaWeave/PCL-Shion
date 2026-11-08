@@ -804,6 +804,10 @@
 
     <sys:String x:Key="Instance.Export.Error.OperationFailed">實例匯出操作失敗。請檢視錯誤詳情。</sys:String>
     <sys:String x:Key="Instance.Export.ExportTask.Prefix">匯出模組包：</sys:String>
+    <sys:String x:Key="Instance.Export.Format">匯出格式</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Modrinth">Modrinth（.mrpack）</sys:String>
+    <sys:String x:Key="Instance.Export.Format.MultiMC">MultiMC / Prism（.zip）</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Mcbbs">MCBBS（.zip）</sys:String>
     <sys:String x:Key="Instance.Export.ModrinthWarning">受 Modrinth 模組包規範限制，匯出的模組包中不會包含 OptiFine。</sys:String>
     <sys:String x:Key="Instance.Export.MrpackFilter">Modrinth 模組包檔案(*.mrpack)|*.mrpack</sys:String>
     <sys:String x:Key="Instance.Export.NetCheckAllFailed.Message">連線取得檔案資訊失敗，是否繼續匯出？&#xA;&#xA;若繼續，所有檔案都將被直接打包。&#xA;由於二次分發可能違反使用協議，請盡量不要公開發布匯出的模組包！</sys:String>

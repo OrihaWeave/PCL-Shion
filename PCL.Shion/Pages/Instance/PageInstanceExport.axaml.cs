@@ -52,6 +52,16 @@ public class ExportOption
 
 public partial class PageInstanceExport : MyPageRight
 {
+    /// <summary>
+    ///     整合包导出格式。
+    /// </summary>
+    private enum ExportFormat
+    {
+        Modrinth,
+        MultiMc,
+        Mcbbs
+    }
+
     private string currentVersion = "";
 
     public PageInstanceExport()
@@ -59,9 +69,12 @@ public partial class PageInstanceExport : MyPageRight
         InitializeComponent();
         PanScroll = PanBack;
         InitializeOptions();
+        ComboFormat.SelectedIndex = 0;
         InitializeEvents();
         Loaded += (_, _) => PageInstanceExport_Loaded();
     }
+
+    private ExportFormat CurrentFormat => (ExportFormat)Math.Clamp(ComboFormat.SelectedIndex, 0, 2);
 
     /// <summary>
     ///     创建每个复选框的导出选项。WPF 中这些选项写在 XAML 的 Tag 里，Avalonia 版在此处创建。
@@ -233,6 +246,7 @@ public partial class PageInstanceExport : MyPageRight
         CheckAdvancedModrinth.Change += CheckAdvancedModrinth_Change;
         CheckAdvancedInclude.Change += CheckAdvancedInclude_Change;
         CheckOptionsOtherFolders.Change += CheckOptionsOtherFolders_Change;
+        ComboFormat.SelectionChanged += (_, _) => RefreshFormatState();
         BindVisibility(CheckOptionsMod, PanOptionsMod);
         BindVisibility(CheckOptionsResourcePacks, PanOptionsResourcePacks);
         BindVisibility(CheckOptionsShaderPacks, PanOptionsShaderPacks);
@@ -264,8 +278,8 @@ public partial class PageInstanceExport : MyPageRight
     public void RefreshAll()
     {
         Log("[Export] 刷新导出页面");
-        HintOptiFine.IsVisible = PageInstanceLeft.McInstance.Info.HasOptiFine;
         currentVersion = PageInstanceLeft.McInstance.PathInstance;
+        RefreshFormatState();
         TextExportName.Text = "";
         TextExportName.HintText = PageInstanceLeft.McInstance.Name;
         TextExportVersion.Text = "";
@@ -294,7 +308,7 @@ public partial class PageInstanceExport : MyPageRight
     {
         if (CheckAdvancedModrinth.Checked == true)
             CheckOptionsPcl.Checked = false;
-        CheckOptionsPcl.IsEnabled = CheckAdvancedModrinth.Checked != true;
+        CheckOptionsPcl.IsEnabled = CurrentFormat == ExportFormat.Modrinth && CheckAdvancedModrinth.Checked != true;
     }
 
     // 勾选"其他文件夹"时，同步勾选/取消所有子选项
@@ -311,7 +325,26 @@ public partial class PageInstanceExport : MyPageRight
     {
         if (CheckAdvancedInclude.Checked == true)
             CheckAdvancedModrinth.Checked = false;
-        CheckAdvancedModrinth.IsEnabled = CheckAdvancedInclude.Checked != true;
+        CheckAdvancedModrinth.IsEnabled = CurrentFormat == ExportFormat.Modrinth && CheckAdvancedInclude.Checked != true;
+    }
+
+    /// <summary>
+    ///     根据导出格式刷新只对 Modrinth 有效的选项，避免把不适用的开关以可交互状态展示给用户。
+    /// </summary>
+    private void RefreshFormatState()
+    {
+        var isModrinth = CurrentFormat == ExportFormat.Modrinth;
+        if (!isModrinth)
+        {
+            CheckAdvancedModrinth.Checked = false;
+            CheckOptionsPcl.Checked = false;
+            CheckOptionsPclCustom.Checked = false;
+        }
+
+        CheckAdvancedModrinth.IsEnabled = isModrinth && CheckAdvancedInclude.Checked != true;
+        CheckOptionsPcl.IsEnabled = isModrinth && CheckAdvancedModrinth.Checked != true;
+        CheckAdvancedInclude.IsEnabled = isModrinth;
+        HintOptiFine.IsVisible = isModrinth && (PageInstanceLeft.McInstance?.Info.HasOptiFine ?? false);
     }
 
     private static void Log(string message) => ModBase.Log(message);
@@ -927,6 +960,8 @@ public partial class PageInstanceExport : MyPageRight
     /// </summary>
     private async void StartExport(object? sender, RoutedEventArgs e)
     {
+        var format = CurrentFormat;
+        var isModrinth = format == ExportFormat.Modrinth;
         var packName = string.IsNullOrEmpty(TextExportName.Text) ? TextExportName.HintText : TextExportName.Text;
         var packVersion = string.IsNullOrEmpty(TextExportVersion.Text) ? "1.0.0" : TextExportVersion.Text;
 
@@ -963,9 +998,9 @@ public partial class PageInstanceExport : MyPageRight
         if (packPath is null)
         {
             var extensions = new List<string>();
-            if (CheckAdvancedModrinth.Checked == false)
+            if (!isModrinth || CheckAdvancedModrinth.Checked == false)
                 extensions.Add(Lang.Text("Instance.Export.ZipFilter"));
-            if (CheckOptionsPcl.Checked == false)
+            if (isModrinth && CheckOptionsPcl.Checked == false)
                 extensions.Add(Lang.Text("Instance.Export.MrpackFilter"));
             packPath = await SelectSaveFileAsync(Lang.Text("Instance.Export.SelectSaveLocation"),
                 packName + (string.IsNullOrEmpty(TextExportVersion.Text) ? "" : " " + TextExportVersion.Text),
@@ -978,12 +1013,16 @@ public partial class PageInstanceExport : MyPageRight
 
         // 缓存所需参数
         var cacheFolder = Path.Combine(Path.GetTempPath(), "PCL Shion", "export-" + Guid.NewGuid().ToString("N"));
-        var overridesFolder = Path.Combine(cacheFolder, "modpack", "overrides");
+        var packRoot = Path.Combine(cacheFolder, "modpack");
+        // MultiMC 的游戏文件位于 .minecraft，MCBBS 与 Modrinth 位于 overrides
+        var overridesFolder = format == ExportFormat.MultiMc
+            ? Path.Combine(packRoot, ".minecraft")
+            : Path.Combine(packRoot, "overrides");
         var mcInstance = PageInstanceLeft.McInstance;
         var pathIndie = mcInstance.PathIndie;
-        var checkHostedAssets = CheckAdvancedInclude.Checked != true;
-        var modrinthUploadMode = CheckAdvancedModrinth.Checked == true;
-        var includePCL = CheckOptionsPcl.Checked == true;
+        var checkHostedAssets = isModrinth && CheckAdvancedInclude.Checked != true;
+        var modrinthUploadMode = isModrinth && CheckAdvancedModrinth.Checked == true;
+        var includePCL = isModrinth && CheckOptionsPcl.Checked == true;
         var includePCLCustom = includePCL && CheckOptionsPclCustom.Checked == true;
         var allRules = ExportRules.Standardize(GetAllRules(), true).ToList();
         var allExtraFiles = ExportRules.Standardize(GetExtraFileLines(), false).ToList();
@@ -1004,8 +1043,8 @@ public partial class PageInstanceExport : MyPageRight
                     new Progress<double>(processed => loader.Progress = Math.Min(0.94d, processed / 10000d)));
                 Log($"[Export] 复制 overrides 文件完成，有 {hostedFiles.Count} 个文件需要联网检查");
                 loader.Progress = 0.95d;
-                // 复制追加内容到根目录
-                var baseFolder = includePCL ? cacheFolder : Path.Combine(cacheFolder, "modpack");
+                // 复制追加内容：Modrinth 允许放到启动器包外层，其他格式放入游戏目录
+                var baseFolder = isModrinth ? includePCL ? cacheFolder : packRoot : overridesFolder;
                 foreach (var line in allExtraFiles)
                     if (line.EndsWith('\\') || line.EndsWith('/'))
                     {
@@ -1024,6 +1063,9 @@ public partial class PageInstanceExport : MyPageRight
                     }
 
                 loader.Progress = 0.97d;
+                // 以下内容仅对 Modrinth 格式的启动器打包有意义
+                if (!isModrinth)
+                    return;
                 // 复制 PCL 实例设置
                 ModpackExporter.CopyDirectory(Path.Combine(mcInstance.PathInstance, "PCL"), Path.Combine(overridesFolder, "PCL"));
                 // 复制 PCL 本体
@@ -1095,36 +1137,68 @@ public partial class PageInstanceExport : MyPageRight
 
         loaders.Add(new ModLoader.LoaderTask<int, int>(Lang.Text("Instance.Export.Task.CreateArchive"), loader =>
         {
-            // 整理文件列表并生成 modrinth.index.json
-            var index = ModpackExporter.BuildIndex(overridesFolder, downloadUrls,
-                mcInstance.Info.VanillaName, mcInstance.Info.HasForge ? mcInstance.Info.Forge : null,
-                mcInstance.Info.HasFabric ? mcInstance.Info.Fabric : null,
-                mcInstance.Info.HasNeoForge ? mcInstance.Info.NeoForge : null,
-                packVersion, packName, mcInstance.GetDefaultDescription());
-            foreach (var file in downloadUrls.Keys)
-                File.Delete(file.Path);
-            loader.Progress = 0.2d;
-            File.WriteAllText(Path.Combine(cacheFolder, "modpack", "modrinth.index.json"), index);
-            // 打包
+            var info = mcInstance.Info;
+            var minecraftVersion = info.VanillaName;
+            var forge = KnownVersion(info.HasForge ? info.Forge : null);
+            var neoForge = KnownVersion(info.HasNeoForge ? info.NeoForge : null);
+            var fabric = KnownVersion(info.HasFabric ? info.Fabric : null);
+            var quilt = KnownVersion(info.HasQuilt ? info.Quilt : null);
+            var optiFine = info.HasOptiFine && !string.IsNullOrEmpty(info.OptiFine)
+                ? $"{minecraftVersion}_HD_U_{info.OptiFine}"
+                : null;
+
             Directory.CreateDirectory(Path.GetDirectoryName(packPath)!);
             if (File.Exists(packPath))
                 File.Delete(packPath);
-            if (includePCL)
+
+            if (isModrinth)
             {
-                // 首次压缩整合包
-                ZipFile.CreateFromDirectory(Path.Combine(cacheFolder, "modpack"), Path.Combine(cacheFolder, "modpack.mrpack"));
-                loader.Progress = 0.5d;
-                Directory.Delete(Path.Combine(cacheFolder, "modpack"), true);
-                loader.Progress = 0.6d;
-                // 二次压缩整合包
-                ZipFile.CreateFromDirectory(cacheFolder, packPath);
-                loader.Progress = 0.9d;
+                // 整理文件列表并生成 modrinth.index.json
+                var index = ModpackExporter.BuildIndex(overridesFolder, downloadUrls,
+                    minecraftVersion, forge, fabric, neoForge, packVersion, packName,
+                    mcInstance.GetDefaultDescription());
+                foreach (var file in downloadUrls.Keys)
+                    File.Delete(file.Path);
+                loader.Progress = 0.2d;
+                File.WriteAllText(Path.Combine(packRoot, "modrinth.index.json"), index);
+                // 打包
+                if (includePCL)
+                {
+                    // 首次压缩整合包
+                    ZipFile.CreateFromDirectory(packRoot, Path.Combine(cacheFolder, "modpack.mrpack"));
+                    loader.Progress = 0.5d;
+                    Directory.Delete(packRoot, true);
+                    loader.Progress = 0.6d;
+                    // 二次压缩整合包
+                    ZipFile.CreateFromDirectory(cacheFolder, packPath);
+                    loader.Progress = 0.9d;
+                }
+                else
+                {
+                    // 直接压缩整合包
+                    ZipFile.CreateFromDirectory(packRoot, packPath);
+                    loader.Progress = 0.8d;
+                }
             }
             else
             {
-                // 直接压缩整合包
-                ZipFile.CreateFromDirectory(Path.Combine(cacheFolder, "modpack"), packPath);
+                // MultiMC 与 MCBBS 的元数据放在压缩包根目录，游戏文件已在复制阶段放入对应目录
+                if (format == ExportFormat.MultiMc)
+                {
+                    File.WriteAllText(Path.Combine(packRoot, "mmc-pack.json"),
+                        MultiMcExport.BuildPackManifest(minecraftVersion, forge, neoForge, fabric, quilt, optiFine));
+                    File.WriteAllText(Path.Combine(packRoot, "instance.cfg"),
+                        MultiMcExport.BuildInstanceConfig(packName, minecraftVersion));
+                }
+                else
+                {
+                    File.WriteAllText(Path.Combine(packRoot, "mcbbs.packmeta"),
+                        McbbsExport.BuildPackMeta(overridesFolder, packName, packVersion, minecraftVersion,
+                            forge, neoForge, fabric, quilt, optiFine, mcInstance.GetDefaultDescription()));
+                }
+
                 loader.Progress = 0.8d;
+                ZipFile.CreateFromDirectory(packRoot, packPath);
             }
 
             Directory.Delete(cacheFolder, true);
@@ -1151,6 +1225,12 @@ public partial class PageInstanceExport : MyPageRight
         Directory.CreateDirectory(Path.GetDirectoryName(target)!);
         File.Copy(source, target, true);
     }
+
+    /// <summary>
+    ///     只接受以数字开头的版本号。PCL 用本地化文本表示无法识别的版本，这类值不能写入其他启动器的元数据。
+    /// </summary>
+    private static string? KnownVersion(string? version) =>
+        version is { Length: > 0 } && char.IsAsciiDigit(version[0]) ? version : null;
 
     /// <summary>
     ///     在 UI 线程显示确认框，并阻塞后台导出线程直到用户作出选择。

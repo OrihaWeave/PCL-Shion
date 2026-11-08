@@ -34,6 +34,21 @@
                         <local:MyTextBox Grid.Row="0" Grid.Column="3" x:Name="TextExportVersion" MaxLength="100" />
                     </Grid>
                 </local:MyCard>
+                <local:MyCard Margin="0,0,0,15">
+                    <Grid Margin="22,15,25,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Left"
+                                   Text="{loc:L Instance.Export.Format}" Margin="0,0,20,0" />
+                        <local:MyComboBox Grid.Column="1" x:Name="ComboFormat">
+                            <local:MyComboBoxItem Content="{loc:L Instance.Export.Format.Modrinth}" />
+                            <local:MyComboBoxItem Content="{loc:L Instance.Export.Format.MultiMC}" />
+                            <local:MyComboBoxItem Content="{loc:L Instance.Export.Format.Mcbbs}" />
+                        </local:MyComboBox>
+                    </Grid>
+                </local:MyCard>
                 <local:MyCard Margin="0,0,0,15" x:Name="CardOptions" MinHeight="39">
                     <local:MyIconTextButton x:Name="BtnOverrideCancel" Height="24" HorizontalAlignment="Right"
                                             VerticalAlignment="Center" Margin="0,0,5,0"
