@@ -8,8 +8,6 @@ on:
     branches: [dev]
     paths: &build-paths
       - 'PCL.Shion*/**'
-      - 'PCL.Core.SourceGenerators/**'
-      - 'PCL.Core/App/Localization/Languages/**'
       - 'PCL.Shion.slnx'
       - 'global.json'
       - 'Directory.*'

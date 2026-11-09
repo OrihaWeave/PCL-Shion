@@ -13,7 +13,7 @@
 | 正式解决方案 | `PCL.Shion.slnx` |
 | 测试结果文件 | MSTest TRX；CI 分别保存 Core 与应用测试结果 |
 
-新的默认解决方案只构建 Avalonia、跨平台 Core、源生成器和两组测试。旧 WPF 解决方案移到 `legacy/PCL.Wpf.slnx`，源码与许可证保留用于追溯，不参与正式构建、CI 或发布。仍复用的旧语言文件按 XML 数据读取，不引入 WPF 程序集。
+新的默认解决方案只构建 Avalonia、跨平台 Core、源生成器和两组测试。旧 WPF 解决方案曾移到 `legacy/PCL.Wpf.slnx` 保留，之后已连同 `Plain Craft Launcher 2`、`PCL.Core` 与 `PCL.Core.Test` 一并从仓库移除，原 PCL 许可文件改存为根目录的 `LICENCE-PCL`。仍复用的语言文件移到 `PCL.Shion/Assets/Lang/Core/`，按 XML 数据读取，不引入 WPF 程序集。
 
 ## 构建与自动化测试
 

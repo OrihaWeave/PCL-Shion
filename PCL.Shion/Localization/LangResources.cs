@@ -8,7 +8,7 @@ using System.Xml;
 namespace PCL.Shion.Localization;
 
 /// <summary>
-/// 读取嵌入的语言文件。核心语言文件取自 PCL.Core，嵌入名为 <c>PCL.Shion.Lang.Core.&lt;语言&gt;.xaml</c>；
+/// 读取嵌入的语言文件。核心语言文件位于 <c>Assets/Lang/Core</c>，嵌入名为 <c>PCL.Shion.Lang.Core.&lt;语言&gt;.xaml</c>；
 /// 各页面自己的补充文件嵌入名为 <c>PCL.Shion.Lang.&lt;名称&gt;.&lt;语言&gt;.xaml</c>，格式与核心文件相同。
 /// </summary>
 internal static class LangResources

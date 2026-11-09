@@ -10,7 +10,7 @@ dotnet test PCL.Shion.Core.Test/PCL.Shion.Core.Test.csproj -c Release --no-build
 dotnet test PCL.Shion.Test/PCL.Shion.Test.csproj -c Release --no-build
 ```
 
-`legacy/PCL.Wpf.slnx` 保留旧版 WPF 的开发参考，不参与默认 CI 和正式发布。修改 `PCL.Core.SourceGenerators` 或共享语言文件也会触发 Avalonia 的验证流程。
+旧版 WPF 代码已从仓库移除，需要对照历史实现时请查阅 Git 历史。核心语言文件位于 `PCL.Shion/Assets/Lang/Core/`，构建密钥由 `PCL.Shion.SourceGenerators` 写入，修改它们都会触发 Avalonia 的验证流程。
 
 ## 发布与瘦身
 

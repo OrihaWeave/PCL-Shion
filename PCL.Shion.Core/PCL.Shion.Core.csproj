@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <!-- 构建时把 PCL_ 开头的环境变量写入 BuildSecrets，见 BuildSecrets.cs -->
-    <ProjectReference Include="..\PCL.Core.SourceGenerators\PCL.Core.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\PCL.Shion.SourceGenerators\PCL.Shion.SourceGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

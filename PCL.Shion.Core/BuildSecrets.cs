@@ -4,7 +4,7 @@ namespace PCL.Shion.Core;
 
 /// <summary>
 /// 构建时写入的密钥。构建前设置环境变量 <c>PCL_WRITE_SECRET</c> 后，所有 <c>PCL_</c> 开头的环境变量
-/// 会由 PCL.Core.SourceGenerators 写入 <c>SecretDictionary</c>，键名去掉 <c>PCL_</c> 前缀。
+/// 会由 PCL.Shion.SourceGenerators 写入 <c>SecretDictionary</c>，键名去掉 <c>PCL_</c> 前缀。
 /// 构建时没有写入的密钥会退回读取运行时的同名环境变量，便于本地开发调试。
 /// </summary>
 public static partial class BuildSecrets
