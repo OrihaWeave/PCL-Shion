@@ -95,8 +95,10 @@
                                   OffsetX="0"
                                   OffsetY="1.5" />
             </StackPanel.Effect>
+            <!-- 固定高度只容纳镐子动画；WPF 会裁掉溢出的“加载中”文字，Avalonia 默认不裁剪，需显式开启，否则文字会与下方标题重叠 -->
             <c:MyLoading x:Name="LoadLaunching"
                          Height="50"
+                         ClipToBounds="True"
                          Margin="0,10,0,5"
                          AutoRun="False" />
             <TextBlock x:Name="LabLaunchingTitle"
