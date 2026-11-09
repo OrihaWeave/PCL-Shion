@@ -16,6 +16,7 @@ using PCL.Shion.Core.Minecraft;
 using PCL.Shion.Core.Platform;
 using PCL.Shion.Localization;
 using PCL.Shion.Navigation;
+using PCL.Shion.Pages.Download;
 using PCL.Shion.UI;
 
 namespace PCL.Shion.Pages.Select;
@@ -336,7 +337,7 @@ public partial class PageSelectLeft : MyPageLeft, IRefreshable
 
     private static void ModpackInstall()
     {
-        Navigator.Go(PageType.Download, PageSubType.DownloadInstall);
+        _ = ModpackImport.StartAsync();
     }
 
     // 创建文件夹
