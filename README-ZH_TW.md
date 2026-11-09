@@ -13,6 +13,7 @@
 
 [下載](https://github.com/Mar7thLover/PCL-Shion/releases) |
 [回報問題或建議](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose) |
+[Discord 社群](https://discord.gg/rvF5tW8cj) |
 [貢獻指南](CONTRIBUTING.md)
 
 </div>
@@ -38,7 +39,7 @@ PCL 詩音已完整移除這套限制，所有地區的使用者都可以正常�
 
 ## 🗺️ 開發計畫
 
-- **統一跨平台介面**：Windows、macOS、Linux 均以 Avalonia 為正式入口；WPF 僅保留歷史原始碼供移植參考，不再參與預設建置與發布。持續補齊功能並改善穩定性。
+- **統一跨平台介面**：Windows、macOS、Linux 均以 Avalonia 為正式入口；舊版 WPF 原始碼已自儲存庫移除，如需查閱請參閱 Git 歷史。持續補齊功能並改善穩定性。
 - **主題與個人化**：引入更豐富的主題與個人化選項。
 - **有趣的小工具**：加入更多實用又好玩的小工具。
 - **新的連線方案**：考慮引入不依賴 Natayark OpenID 的連線方案，作為現有方案的替代選擇。
@@ -95,14 +96,14 @@ dotnet test PCL.Shion.Core.Test/PCL.Shion.Core.Test.csproj -c Release
 dotnet test PCL.Shion.Test/PCL.Shion.Test.csproj -c Release
 ```
 
-發布建置與套件檢查請參閱[貢獻指南](CONTRIBUTING.md)。歷史 WPF 工程位於 [legacy/PCL.Wpf.slnx](legacy/PCL.Wpf.slnx)。
+發布建置與套件檢查請參閱[貢獻指南](CONTRIBUTING.md)。
 
 [上游整合表](docs/upstream-integration.md) · [驗證記錄](docs/validation.md)
 
 ## 🔒 授權條款
 
-- `Plain Craft Launcher 2/` 使用 [自訂授權條款](Plain%20Craft%20Launcher%202/LICENCE)
-- `其餘所有目錄` 使用 [Apache License 2.0](LICENSE)
+- 本儲存庫的程式碼使用 [Apache License 2.0](LICENSE)
+- 原 PCL 專案的《PCL 分发有限许可》與《PCL 存储库合理使用指南》保留於 [LICENCE-PCL](LICENCE-PCL)
 
 ## 🙏 致謝
 

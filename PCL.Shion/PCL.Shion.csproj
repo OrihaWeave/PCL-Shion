@@ -34,8 +34,8 @@
     <ItemGroup>
         <AvaloniaResource Include="Assets\**" Exclude="Assets\Strings\**;Assets\Lang\**" />
         <EmbeddedResource Include="Assets\Strings\**\*.json" LogicalName="PCL.Shion.Strings.%(Filename).json" WithCulture="false" />
-        <!-- 语言文件是 WPF 格式的 ResourceDictionary，由 Lang 按 XML 读取，不能交给 Avalonia 编译：核心文件直接取自 PCL.Core，各页面的补充文件放在 Assets\Lang -->
-        <EmbeddedResource Include="..\PCL.Core\App\Localization\Languages\*.xaml" Link="Assets\Lang\Core\%(Filename)%(Extension)" LogicalName="PCL.Shion.Lang.Core.%(Filename).xaml" WithCulture="false" />
+        <!-- 语言文件沿用 XAML ResourceDictionary 格式，由 Lang 按 XML 读取，不能交给 Avalonia 编译：核心文件放在 Assets\Lang\Core，各页面的补充文件放在 Assets\Lang -->
+        <EmbeddedResource Include="Assets\Lang\Core\*.xaml" LogicalName="PCL.Shion.Lang.Core.%(Filename).xaml" WithCulture="false" />
         <EmbeddedResource Include="Assets\Lang\*.xaml" LogicalName="PCL.Shion.Lang.%(Filename).xaml" WithCulture="false" />
     </ItemGroup>
     <Target Name="ValidateFrameworkDependentPublish" BeforeTargets="PrepareForPublish">

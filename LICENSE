@@ -188,11 +188,12 @@
 
    Copyright 2025 PCL Community
 
-   SPECIAL DIRECTORY: Plain Craft Launcher 2/
+   ORIGINAL PCL TERMS
 
-   Licensed under some custom terms discribed in the 'Plain Craft Launcher 2/LICENCE' file.
+   The 'Plain Craft Launcher 2/' directory, which was licensed under custom terms,
+   has been removed from this repository. Those terms are kept in the 'LICENCE-PCL' file.
 
-   ALL THE OTHER DIRECTORIES
+   ALL THE OTHER FILES
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

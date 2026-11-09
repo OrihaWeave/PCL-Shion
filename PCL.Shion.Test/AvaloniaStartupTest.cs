@@ -40,6 +40,7 @@ public sealed class AvaloniaStartupTest
             Assert.IsFalse(overall.FindControl<MyButton>("BtnManageScript")!.IsEnabled);
             Assert.IsFalse(overall.FindControl<MyButton>("BtnManageTest")!.IsEnabled);
             AssertEscapeCancelsLoginOnce(lifetime.MainWindow);
+            AssertLaunchLoadingTextIsClipped();
         }
         finally
         {
@@ -47,6 +48,19 @@ public sealed class AvaloniaStartupTest
             App.SettingsLoader = loader;
             if (Directory.Exists(directory)) Directory.Delete(directory, true);
         }
+    }
+
+    /// <summary>
+    ///     启动面板的加载动画只留 50px 高度，溢出的“加载中”文字必须被裁剪，否则会与下方的启动标题重叠。
+    /// </summary>
+    private static void AssertLaunchLoadingTextIsClipped()
+    {
+        var loading = new PageLaunchLeft().FindControl<MyLoading>("LoadLaunching")!;
+        loading.Measure(new Size(300, double.PositiveInfinity));
+        loading.Arrange(new Rect(0, 0, 300, loading.Height));
+        var text = loading.FindControl<TextBlock>("LabText")!;
+        Assert.IsTrue(text.Bounds.Top >= loading.Height, "加载文字应位于动画区域之外");
+        Assert.IsTrue(loading.ClipToBounds);
     }
 
     private static void AssertEscapeCancelsLoginOnce(Window window)

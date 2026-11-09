@@ -13,6 +13,7 @@
 
 [Download](https://github.com/Mar7thLover/PCL-Shion/releases) |
 [Report a bug or suggest a feature](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose) |
+[Discord](https://discord.gg/rvF5tW8cj) |
 [Contributing](CONTRIBUTING.md)
 
 </div>
@@ -38,7 +39,7 @@ Upstream PCL CE has entered maintenance mode and no longer accepts feature reque
 
 ## 🗺️ Roadmap
 
-- **One cross-platform UI**: Windows, macOS and Linux now use Avalonia as the official entry point. WPF remains only as historical source for migration reference and is excluded from default builds and releases. Feature coverage and stability continue to improve.
+- **One cross-platform UI**: Windows, macOS and Linux now use Avalonia as the official entry point. The legacy WPF source has been removed from the repository; see the Git history if you need it. Feature coverage and stability continue to improve.
 - **Themes and personalization**: richer themes and personalization options.
 - **Fun little tools**: more handy and fun built-in tools.
 - **A new multiplayer solution**: an alternative online multiplayer solution that does not depend on Natayark OpenID.
@@ -95,14 +96,14 @@ dotnet test PCL.Shion.Core.Test/PCL.Shion.Core.Test.csproj -c Release
 dotnet test PCL.Shion.Test/PCL.Shion.Test.csproj -c Release
 ```
 
-See [Contributing](CONTRIBUTING.md) for framework-dependent publishing and package verification. The historical WPF solution is [legacy/PCL.Wpf.slnx](legacy/PCL.Wpf.slnx).
+See [Contributing](CONTRIBUTING.md) for framework-dependent publishing and package verification.
 
 [Upstream integration](docs/upstream-integration.md) · [Validation results](docs/validation.md)
 
 ## 🔒 License
 
-- `Plain Craft Launcher 2/` uses a [custom license](Plain%20Craft%20Launcher%202/LICENCE)
-- `All other directories` use the [Apache License 2.0](LICENSE)
+- The code in this repository is licensed under the [Apache License 2.0](LICENSE)
+- The original PCL project's distribution license and repository usage guide are kept in [LICENCE-PCL](LICENCE-PCL)
 
 ## 🙏 Acknowledgements
 

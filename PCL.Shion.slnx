@@ -5,7 +5,7 @@
     <BuildType Name="Debug" />
     <BuildType Name="Release" />
   </Configurations>
-  <Project Path="PCL.Core.SourceGenerators/PCL.Core.SourceGenerators.csproj" />
+  <Project Path="PCL.Shion.SourceGenerators/PCL.Shion.SourceGenerators.csproj" />
   <Project Path="PCL.Shion.Core/PCL.Shion.Core.csproj" />
   <Project Path="PCL.Shion/PCL.Shion.csproj" />
   <Project Path="PCL.Shion.Core.Test/PCL.Shion.Core.Test.csproj" />
