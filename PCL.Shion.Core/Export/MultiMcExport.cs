@@ -12,10 +12,10 @@ public static class MultiMcExport
     /// <summary>
     /// 生成 <c>mmc-pack.json</c> 的内容。
     /// 组件 UID 与版本号需要能被 MultiMC 的元数据服务识别；无法确定的组件应传入 <see langword="null"/> 而不是占位文本。
+    /// MultiMC 与 Prism 的元数据服务没有 OptiFine 组件，写入后会导致实例无法加载，因此不导出 OptiFine。
     /// </summary>
     public static string BuildPackManifest(string minecraftVersion, string? forgeVersion = null,
-        string? neoForgeVersion = null, string? fabricVersion = null, string? quiltVersion = null,
-        string? optiFineVersion = null)
+        string? neoForgeVersion = null, string? fabricVersion = null, string? quiltVersion = null)
     {
         var components = new JsonArray
         {
@@ -42,7 +42,6 @@ public static class MultiMcExport
         AddComponent("net.neoforged", neoForgeVersion);
         AddComponent("net.fabricmc.fabric-loader", fabricVersion);
         AddComponent("org.quiltmc.quilt-loader", quiltVersion);
-        AddComponent("optifine.OptiFine", optiFineVersion);
 
         var result = new JsonObject
         {

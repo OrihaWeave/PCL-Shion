@@ -344,7 +344,9 @@ public partial class PageInstanceExport : MyPageRight
         CheckAdvancedModrinth.IsEnabled = isModrinth && CheckAdvancedInclude.Checked != true;
         CheckOptionsPcl.IsEnabled = isModrinth && CheckAdvancedModrinth.Checked != true;
         CheckAdvancedInclude.IsEnabled = isModrinth;
-        HintOptiFine.IsVisible = isModrinth && (PageInstanceLeft.McInstance?.Info.HasOptiFine ?? false);
+        // Modrinth 与 MultiMC 格式都无法携带 OptiFine，MCBBS 格式会在 addons 中写入
+        HintOptiFine.IsVisible = CurrentFormat != ExportFormat.Mcbbs && (PageInstanceLeft.McInstance?.Info.HasOptiFine ?? false);
+        HintOptiFine.Text = Lang.Text(isModrinth ? "Instance.Export.ModrinthWarning" : "Instance.Export.MultiMcWarning");
     }
 
     private static void Log(string message) => ModBase.Log(message);
@@ -1143,8 +1145,9 @@ public partial class PageInstanceExport : MyPageRight
             var neoForge = KnownVersion(info.HasNeoForge ? info.NeoForge : null);
             var fabric = KnownVersion(info.HasFabric ? info.Fabric : null);
             var quilt = KnownVersion(info.HasQuilt ? info.Quilt : null);
+            // MCBBS 的 optifine 版本按 HD_U_xx 写入：HMCL 按此格式匹配，PCL 两种写法都能识别
             var optiFine = info.HasOptiFine && !string.IsNullOrEmpty(info.OptiFine)
-                ? $"{minecraftVersion}_HD_U_{info.OptiFine}"
+                ? "HD_U_" + info.OptiFine
                 : null;
 
             Directory.CreateDirectory(Path.GetDirectoryName(packPath)!);
@@ -1186,7 +1189,7 @@ public partial class PageInstanceExport : MyPageRight
                 if (format == ExportFormat.MultiMc)
                 {
                     File.WriteAllText(Path.Combine(packRoot, "mmc-pack.json"),
-                        MultiMcExport.BuildPackManifest(minecraftVersion, forge, neoForge, fabric, quilt, optiFine));
+                        MultiMcExport.BuildPackManifest(minecraftVersion, forge, neoForge, fabric, quilt));
                     File.WriteAllText(Path.Combine(packRoot, "instance.cfg"),
                         MultiMcExport.BuildInstanceConfig(packName, minecraftVersion));
                 }
