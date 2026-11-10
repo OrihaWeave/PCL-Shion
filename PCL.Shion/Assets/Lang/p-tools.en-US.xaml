@@ -20,4 +20,16 @@
     <sys:String x:Key="Tools.Download.Remaining">{0} left</sys:String>
     <sys:String x:Key="Tools.Download.ConnectionCount">{0} connections</sys:String>
     <sys:String x:Key="Tools.Download.Error.HashMismatch">Checksum mismatch: expected {0}, got {1}</sys:String>
+    <sys:String x:Key="Tools.Seed.Title">World seed viewer</sys:String>
+    <sys:String x:Key="Tools.Seed.Description">Reads a world's level.dat and shows its seed and basic information. The world is never modified.</sys:String>
+    <sys:String x:Key="Tools.Seed.World">World</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse">Browse</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse.Title">Select a world folder (containing level.dat)</sys:String>
+    <sys:String x:Key="Tools.Seed.NoInstance">No instance is selected. Use Browse to open a world folder directly.</sys:String>
+    <sys:String x:Key="Tools.Seed.NoWorlds">The current instance has no worlds yet. Use Browse to open another world folder.</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.NoLevelDat">This folder has no level.dat and is not a world folder: {0}</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.Unreadable">level.dat could not be read and may be corrupted: {0}</sys:String>
+    <sys:String x:Key="Tools.Seed.UnknownVersion">Unknown (world from before 1.9)</sys:String>
+    <sys:String x:Key="Tools.Seed.Copy">Click to copy the seed</sys:String>
+    <sys:String x:Key="Tools.Seed.Copied">Seed copied to the clipboard</sys:String>
 </ResourceDictionary>

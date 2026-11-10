@@ -89,6 +89,7 @@ public partial class PageToolsTest : MyPageRight
         TextDownloadHash.Validate();
         StartButtonRefresh();
         ShowDownloadTasks();
+        InitializeSeedViewer();
     }
 
     private void StartButtonRefresh()

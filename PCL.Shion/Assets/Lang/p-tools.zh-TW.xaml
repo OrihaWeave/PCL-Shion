@@ -20,4 +20,16 @@
     <sys:String x:Key="Tools.Download.Remaining">剩餘 {0}</sys:String>
     <sys:String x:Key="Tools.Download.ConnectionCount">{0} 個連線</sys:String>
     <sys:String x:Key="Tools.Download.Error.HashMismatch">校驗值不符，期望 {0}，實際 {1}</sys:String>
+    <sys:String x:Key="Tools.Seed.Title">查看世界種子</sys:String>
+    <sys:String x:Key="Tools.Seed.Description">讀取存檔的 level.dat，顯示世界種子與基本資訊。只會讀取，不會修改存檔。</sys:String>
+    <sys:String x:Key="Tools.Seed.World">存檔</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse">選擇資料夾</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse.Title">選擇世界資料夾（包含 level.dat）</sys:String>
+    <sys:String x:Key="Tools.Seed.NoInstance">還沒有選擇實例。可以點擊「選擇資料夾」直接開啟一個世界資料夾。</sys:String>
+    <sys:String x:Key="Tools.Seed.NoWorlds">目前實例還沒有存檔。可以點擊「選擇資料夾」開啟其他世界資料夾。</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.NoLevelDat">這個資料夾裡沒有 level.dat，不是一個世界資料夾：{0}</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.Unreadable">無法讀取 level.dat，檔案可能已損毀：{0}</sys:String>
+    <sys:String x:Key="Tools.Seed.UnknownVersion">未知（1.9 以前的存檔）</sys:String>
+    <sys:String x:Key="Tools.Seed.Copy">點擊複製種子</sys:String>
+    <sys:String x:Key="Tools.Seed.Copied">種子已複製到剪貼簿</sys:String>
 </ResourceDictionary>
