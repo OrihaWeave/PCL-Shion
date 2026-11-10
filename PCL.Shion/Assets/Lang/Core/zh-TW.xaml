@@ -1979,6 +1979,17 @@
 
     <!-- Minecraft.Download.Modpack -->
 
+    <sys:String x:Key="Minecraft.Download.Modpack.CurseForgeUnsupported">暫不支援匯入 CurseForge 格式的模組包，請改用 Modrinth、MCBBS 或 MultiMC / Prism 格式。</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.InstanceNameSameAsVersion">實例名稱不能與模組包使用的 Minecraft 版本號相同。</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issues.Title">部分內容無法自動安裝</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issues.Message">以下內容無法自動處理，匯入後可能需要手動補齊：&#xA;{0}&#xA;&#xA;是否繼續匯入？</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.OptiFine">OptiFine {0}：請在匯入後手動安裝</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.UnsupportedComponent">不支援的元件：{0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.JsonPatch">MultiMC JSON 修補檔（將被忽略）：{0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.CurseForgeFile">需要從 CurseForge 下載的檔案（將被略過）：{0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Started">開始匯入模組包：{0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Succeeded">模組包 {0} 匯入完成</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Failed">模組包 {0} 匯入失敗：{1}</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.DoNotUse">不換用</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.Message">模組包裡似乎內建了啟動器，是否換用它繼續安裝？&#xD;&#xA;即將開啟：{0}</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.Title">換用模組包啟動器？</sys:String>

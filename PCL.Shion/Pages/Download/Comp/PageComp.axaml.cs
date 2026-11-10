@@ -53,6 +53,7 @@ public partial class PageComp : MyScrollViewer
         };
         InitializeComponent();
         Loaded += PageCompControls_Inited;
+        BtnSearchInstallModPack.Click += (_, _) => _ = ModpackImport.StartAsync();
         BtnPageFirst.Click += (_, _) => ChangePage(0);
         BtnPageLeft.Click += (_, _) => ChangePage(page - 1);
         BtnPageRight.Click += (_, _) => ChangePage(page + 1);

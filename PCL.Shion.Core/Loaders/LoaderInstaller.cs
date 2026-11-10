@@ -32,11 +32,21 @@ public sealed class LoaderInstaller(DownloadEngine engine, DownloadSource source
         CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
+        using var installation = InstallationSession.Begin(minecraftRoot, instanceName);
+        await InstallInSessionAsync(minecraftRoot, loader, instanceName, javaExecutable, installation, progress, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    internal async Task InstallInSessionAsync(
+        string minecraftRoot, LoaderVersion loader, string instanceName, string javaExecutable,
+        InstallationSession installation, IProgress<InstallProgress>? progress, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        installation.EnsureOwns(minecraftRoot, instanceName);
         InstallationSession.ValidateInstanceName(loader.MinecraftVersion);
         if (string.Equals(instanceName, loader.MinecraftVersion, StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("The instance name must differ from the Minecraft version it inherits from.", nameof(instanceName));
 
-        using var installation = InstallationSession.Begin(minecraftRoot, instanceName);
         await EnsureVanillaAsync(minecraftRoot, loader, progress, cancellationToken).ConfigureAwait(false);
 
         var install = loader.Kind switch

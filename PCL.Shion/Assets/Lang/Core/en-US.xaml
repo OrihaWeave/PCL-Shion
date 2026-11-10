@@ -2026,6 +2026,17 @@
 
     <!-- Minecraft.Download.Modpack -->
 
+    <sys:String x:Key="Minecraft.Download.Modpack.CurseForgeUnsupported">CurseForge modpacks cannot be imported yet. Please use the Modrinth, MCBBS or MultiMC / Prism format instead.</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.InstanceNameSameAsVersion">The instance name cannot be the same as the Minecraft version used by the modpack.</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issues.Title">Some content cannot be installed automatically</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issues.Message">The following content cannot be handled automatically and may need to be added manually after import:&#xA;{0}&#xA;&#xA;Continue importing?</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.OptiFine">OptiFine {0}: install it manually after import</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.UnsupportedComponent">Unsupported component: {0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.JsonPatch">MultiMC JSON patch (will be ignored): {0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Issue.CurseForgeFile">File that must be downloaded from CurseForge (will be skipped): {0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Started">Started importing modpack: {0}</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Succeeded">Modpack {0} imported</sys:String>
+    <sys:String x:Key="Minecraft.Download.Modpack.Failed">Failed to import modpack {0}: {1}</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.DoNotUse">Do not use</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.Message">The modpack appears to include its own launcher. Switch to using it to continue?&#xD;&#xA;Will open: {0}</sys:String>
     <sys:String x:Key="Minecraft.Download.Modpack.BundledLauncher.Title">Switch to modpack launcher?</sys:String>
