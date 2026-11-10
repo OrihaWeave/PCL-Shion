@@ -7,4 +7,8 @@
     <sys:String x:Key="Setup.Language.Banner.TranslateWebsite">Translation website</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.News">Show Minecraft news</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.Hint">Checked items are shown as widgets on the right side of the launch page.</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.ExportLaunchScript.ToolTip">Generate a script that starts the game with the current profile and instance settings, without the launcher.&#xA;Online access tokens are masked, so the script usually only works with offline profiles.</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.TestGame.ToolTip">Start the game and open the live log right away, to diagnose launch problems and crashes.</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileName">Launch {0}</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileFilter.Shell">Shell script (*.sh)|*.sh</sys:String>
 </ResourceDictionary>

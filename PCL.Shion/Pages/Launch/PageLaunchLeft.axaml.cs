@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Avalonia;
@@ -19,6 +20,7 @@ using PCL.Shion.Core.Instances;
 using PCL.Shion.Core.Java;
 using PCL.Shion.Core.Launch;
 using PCL.Shion.Core.Minecraft;
+using PCL.Shion.Core.Platform;
 using PCL.Shion.Localization;
 using PCL.Shion.Navigation;
 using PCL.Shion.Pages.Instance;
@@ -26,6 +28,7 @@ using PCL.Shion.Pages.Setup;
 using PCL.Shion.Services;
 using PCL.Shion.UI;
 using PCL.Shion.UI.Animation;
+using PCL.Shion.ViewModels;
 
 namespace PCL.Shion.Pages.Launch;
 
@@ -373,7 +376,9 @@ public partial class PageLaunchLeft : MyPageLeft
             // 文本
             LabLaunchingTitle.Text = isLaunched
                 ? Lang.Text("Launch.Status.Title.Launched")
-                : Lang.Text("Launch.Status.Title.Launching");
+                : currentOptions.ScriptPath is null
+                    ? Lang.Text("Launch.Status.Title.Launching")
+                    : Lang.Text("Launch.Status.Title.ExportingScript");
             LabLaunchingProgress.Text = Lang.Number(showProgress, "P2");
             var hasLaunchDownloader = isLaunchDownloading;
             LabLaunchingDownload.Text = ByteFormatter.FormatSpeed(launchSpeed);
@@ -484,10 +489,41 @@ public partial class PageLaunchLeft : MyPageLeft
     #region 启动流程
 
     /// <summary>
-    ///     尝试启动 Minecraft：预检测、补全文件、启动游戏进程。对应 WPF 的 ModLaunch.McLaunchStart，
-    ///     实际启动通过 <see cref="GameRunner" /> 完成。
+    ///     启动的附加选项，对应 WPF 的 McLaunchOptions。
     /// </summary>
-    private async void McLaunchStart()
+    /// <param name="Instance">要启动的实例；为 null 时使用启动页当前选中的实例。</param>
+    /// <param name="IsTest">测试游戏：启动后直接打开实时日志页面。</param>
+    /// <param name="ScriptPath">不为 null 时只导出启动脚本到该路径，不启动游戏。</param>
+    public sealed record LaunchOptions(GameInstance? Instance = null, bool IsTest = false, string? ScriptPath = null);
+
+    /// <summary>当前启动流程的选项。</summary>
+    private static LaunchOptions currentOptions = new();
+
+    /// <summary>
+    ///     从其他页面（例如实例概览）发起启动：切换到启动页并显示启动进度。已有启动流程时提示并返回 false。
+    /// </summary>
+    public static bool StartFromElsewhere(LaunchOptions options)
+    {
+        if (isLaunchRunning)
+        {
+            HintService.Hint(Lang.Text(options.ScriptPath is null
+                ? "Minecraft.Launch.Error.AlreadyLaunching"
+                : "Instance.Overall.Script.WaitForLaunchTask"), HintType.Error);
+            return false;
+        }
+
+        Navigator.Go(PageType.Launch);
+        if (Navigator.GetPageLeft(PageType.Launch) is not PageLaunchLeft left)
+            return false;
+        left.McLaunchStart(options);
+        return true;
+    }
+
+    /// <summary>
+    ///     尝试启动 Minecraft：预检测、补全文件、启动游戏进程。对应 WPF 的 ModLaunch.McLaunchStart，
+    ///     实际启动通过 <see cref="GameRunner" /> 完成。指定 <see cref="LaunchOptions.ScriptPath" /> 时只导出启动脚本。
+    /// </summary>
+    private async void McLaunchStart(LaunchOptions? options = null)
     {
         if (isLaunchRunning)
         {
@@ -495,9 +531,11 @@ public partial class PageLaunchLeft : MyPageLeft
             return;
         }
 
-        var instance = McInstanceSelected;
+        options ??= new LaunchOptions();
+        var instance = options.Instance ?? McInstanceSelected;
         if (instance is null)
             return;
+        currentOptions = options with { Instance = instance };
 
         isLaunchRunning = true;
         isLaunchStarted = false;
@@ -510,7 +548,7 @@ public partial class PageLaunchLeft : MyPageLeft
         launchCancel = cancel;
 
         // 开始动画
-        PageChangeToLaunching();
+        PageChangeToLaunching(instance.Name);
         StartLaunchingTimer();
         var settings = App.Services.Settings;
         var root = settings.MinecraftRoot;
@@ -524,7 +562,8 @@ public partial class PageLaunchLeft : MyPageLeft
                 return;
             }
 
-            var profile = ProfileService.Current ?? throw new OperationCanceledException();
+            var profile = ProfileService.Current ??
+                          throw new InvalidOperationException(Lang.Text("Minecraft.Launch.Precheck.NoProfile"));
             var instanceSettings = await Task.Run(() => InstanceStore.Load(root, instance.Name), cancel.Token);
             var java = await ResolveJavaAsync(root, instance, instanceSettings, settings);
             if (java is null)
@@ -546,11 +585,32 @@ public partial class PageLaunchLeft : MyPageLeft
             }
 
             cancel.Token.ThrowIfCancellationRequested();
+            if (options.ScriptPath is { } scriptPath)
+            {
+                await Task.Run(() => WriteLaunchScript(scriptPath, root, instance.Name, plan, instanceSettings,
+                    profile.ProfileType == ProfileType.Offline ? null : account.AccessToken), cancel.Token);
+                outcome = LaunchOutcome.Cancelled;
+                HintService.Hint(Lang.Text("Minecraft.Launch.ExportScript.Success"), HintType.Success);
+                TryOpenFolder(Path.GetDirectoryName(scriptPath));
+                return;
+            }
+
             launchStage = Lang.Text("Minecraft.Launch.Stage.Root");
             launchProgress = 0.95d;
+            // 每次启动都记录实时日志，“游戏日志”按钮与日志页面因此对所有游戏可用
+            var log = new GameLog(instance.Name);
+            log.AppendLauncher(Strings.LogStarting(instance.Name, java));
+            var exited = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
             var game = await Task.Run(() => App.Services.Runner.Start(
-                root, instance.Name, plan, instanceSettings, null,
-                code => Dispatcher.UIThread.Post(() => OnGameExited(code))), cancel.Token);
+                root, instance.Name, plan, instanceSettings, log.Append,
+                code =>
+                {
+                    exited.TrySetResult(code);
+                    Dispatcher.UIThread.Post(() => OnGameExited(code));
+                }), cancel.Token);
+            MainWindow.Current?.Home.TrackLaunchedGame(game, log, exited.Task);
+            if (options.IsTest)
+                Navigator.Go(PageType.GameLog);
 
             launchGame = game;
             isLaunchStarted = true;
@@ -569,12 +629,56 @@ public partial class PageLaunchLeft : MyPageLeft
         }
         catch (Exception e)
         {
-            HintService.Hint(Lang.Text("Minecraft.Launch.Precheck.Failed.WithDetail", e.Message), HintType.Error);
+            HintService.Hint(options.ScriptPath is null
+                ? Lang.Text("Minecraft.Launch.Precheck.Failed.WithDetail", e.Message)
+                : Lang.Text("Minecraft.Launch.Error.ExportScriptFailed") + " " + e.Message, HintType.Error);
         }
         finally
         {
             if (outcome != LaunchOutcome.Started)
                 FinishLaunch();
+        }
+    }
+
+    /// <summary>
+    ///     把启动计划写成启动脚本。Windows 写批处理，其他系统写 shell 脚本并加上可执行权限。
+    ///     正版与第三方账户的访问令牌会被打码，与 WPF 版相同。
+    /// </summary>
+    private static void WriteLaunchScript(string path, string root, string instanceName, LaunchPlan plan,
+        InstanceSettings instanceSettings, string? tokenToMask)
+    {
+        var kind = path.EndsWith(".bat", StringComparison.OrdinalIgnoreCase) ||
+                   path.EndsWith(".cmd", StringComparison.OrdinalIgnoreCase)
+            ? LaunchScriptKind.WindowsBatch
+            : path.EndsWith(".sh", StringComparison.OrdinalIgnoreCase)
+                ? LaunchScriptKind.PosixShell
+                : LaunchScript.DefaultKind;
+        var commandEnvironment = new Dictionary<string, string>
+        {
+            ["INST_NAME"] = instanceName,
+            ["INST_DIR"] = Path.Combine(Path.GetFullPath(root), "versions", instanceName),
+            ["INST_MC_DIR"] = plan.WorkingDirectory,
+            ["INST_JAVA"] = plan.JavaExecutable
+        };
+        var content = LaunchScript.Create(plan, instanceName, kind, instanceSettings.PreLaunchCommand, tokenToMask,
+            commandEnvironment);
+        File.WriteAllText(path, content, new UTF8Encoding(false));
+        if (!OperatingSystem.IsWindows())
+            File.SetUnixFileMode(path, File.GetUnixFileMode(path) | UnixFileMode.UserExecute |
+                                       UnixFileMode.GroupExecute | UnixFileMode.OtherExecute);
+    }
+
+    private static void TryOpenFolder(string? folder)
+    {
+        if (string.IsNullOrEmpty(folder))
+            return;
+        try
+        {
+            SystemShell.OpenFolder(folder);
+        }
+        catch (Exception)
+        {
+            // 打开文件管理器失败不影响导出结果
         }
     }
 
@@ -742,7 +846,7 @@ public partial class PageLaunchLeft : MyPageLeft
     /// <summary>
     ///     切换至启动中页面。
     /// </summary>
-    public void PageChangeToLaunching()
+    public void PageChangeToLaunching(string? instanceName = null)
     {
         // 修改验证方式
         switch (ProfileService.Current?.ProfileType)
@@ -769,9 +873,11 @@ public partial class PageLaunchLeft : MyPageLeft
         }
 
         // 初始化页面
-        LabLaunchingName.Text = McInstanceSelected?.Name ?? "";
+        LabLaunchingName.Text = instanceName ?? McInstanceSelected?.Name ?? "";
         LabLaunchingStage.Text = Lang.Text("Common.Action.Initialize");
-        LabLaunchingTitle.Text = Lang.Text("Launch.Status.Title.Launching");
+        LabLaunchingTitle.Text = Lang.Text(currentOptions.ScriptPath is null
+            ? "Launch.Status.Title.Launching"
+            : "Launch.Status.Title.ExportingScript");
         LabLaunchingProgress.Text = Lang.Number(0d, "P2");
         LabLaunchingProgress.Opacity = 1d;
         LabLaunchingDownload.IsVisible = true;

@@ -430,6 +430,24 @@ public sealed partial class HomeViewModel : ObservableObject
         };
     }
 
+    /// <summary>
+    ///     登记由启动页启动的游戏，使其出现在“正在运行”列表与实时日志页面中；游戏退出后自动移除并在日志末尾记录退出码。
+    ///     只在 UI 线程调用。
+    /// </summary>
+    public void TrackLaunchedGame(RunningGame game, GameLog log, Task<int> exited)
+    {
+        var running = new RunningGameItem(game, log, shown => Log = shown);
+        RunningGames.Add(running);
+        _ = RemoveWhenExitedAsync(running, exited);
+    }
+
+    private async Task RemoveWhenExitedAsync(RunningGameItem game, Task<int> exited)
+    {
+        var exitCode = await exited;
+        RunningGames.Remove(game);
+        game.Log.AppendLauncher(Strings.LogExited(exitCode));
+    }
+
     /// <summary>等游戏退出后移出“正在运行”列表、通知用户，并刷新实例列表里的游玩时长。</summary>
     private async Task WatchExitAsync(RunningGameItem game, Task<int> exited)
     {

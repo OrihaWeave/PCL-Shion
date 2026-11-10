@@ -205,11 +205,9 @@ public sealed class GameServices : IDisposable
     /// <summary>
     /// 以测试模式启动实例（对应 WPF 的 <c>McLaunchStart</c> 的 IsTest 选项）。
     /// </summary>
-    public void StartTestGame(GameInstance instance)
-    {
-        // TODO(shion): 启动需要的账号、Java 选择与启动计划组装仍在 PageLaunchLeft 中，尚未抽到 Services，测试游戏暂不可用。
-        PostHint(UnsupportedHint, HintType.Error);
-    }
+    public void StartTestGame(GameInstance instance) =>
+        Dispatcher.UIThread.Post(() =>
+            PageLaunchLeft.StartFromElsewhere(new PageLaunchLeft.LaunchOptions(instance, IsTest: true)));
 
     /// <summary>
     /// 把 <paramref name="filePath"/> 中的文件合并进实例的客户端 jar（对应 WPF 的 <c>GameCore.AddToCore</c>），在后台执行。

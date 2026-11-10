@@ -570,7 +570,7 @@ public static class Navigator
     /// <summary>
     ///     获取主页面对应的左侧页面实例，不存在时创建。
     /// </summary>
-    private static MyPageLeft GetPageLeft(PageType type)
+    internal static MyPageLeft GetPageLeft(PageType type)
     {
         if (!pageLeftCache.TryGetValue(type, out var left))
         {

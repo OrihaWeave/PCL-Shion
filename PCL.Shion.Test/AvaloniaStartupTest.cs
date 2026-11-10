@@ -37,13 +37,15 @@ public sealed class AvaloniaStartupTest
             Assert.IsNotNull(new PageSetupLog().Content);
             Assert.IsNotNull(new PageSetupLauncherMisc().Content);
             var overall = new PageInstanceOverall();
-            Assert.IsFalse(overall.FindControl<MyButton>("BtnManageScript")!.IsEnabled);
-            Assert.IsFalse(overall.FindControl<MyButton>("BtnManageTest")!.IsEnabled);
+            Assert.IsTrue(overall.FindControl<MyButton>("BtnManageScript")!.IsEnabled);
+            Assert.IsTrue(overall.FindControl<MyButton>("BtnManageTest")!.IsEnabled);
             AssertEscapeCancelsLoginOnce(lifetime.MainWindow);
             AssertLaunchLoadingTextIsClipped();
             // 整合包导入使用的提示必须在语言文件中存在，缺失时 Lang 会返回键名本身或 !键名!
             foreach (var key in new[] { "Minecraft.Download.Modpack.Issues.Message", "Minecraft.Download.Modpack.CurseForgeUnsupported",
-                         "Minecraft.Download.Modpack.Succeeded", "Instance.Export.MultiMcWarning" })
+                         "Minecraft.Download.Modpack.Succeeded", "Instance.Export.MultiMcWarning",
+                         "Instance.Overall.Manage.ExportLaunchScript.ToolTip", "Instance.Overall.Manage.TestGame.ToolTip",
+                         "Instance.Overall.Script.FileName", "Instance.Overall.Script.FileFilter.Shell" })
                 Assert.IsFalse(PCL.Shion.Localization.Lang.Text(key).Contains(key), key);
         }
         finally

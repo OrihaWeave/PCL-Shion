@@ -7,4 +7,8 @@
     <sys:String x:Key="Setup.Language.Banner.TranslateWebsite">前往翻譯網站</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.News">顯示 Minecraft 新聞</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.Hint">勾選的項目會以小工具的形式顯示在啟動頁右側。</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.ExportLaunchScript.ToolTip">使用目前的檔案與實例設定產生啟動指令碼，不經過啟動器即可直接啟動遊戲。&#xA;正版登入權杖會被遮蔽，因此指令碼通常只適用於離線檔案。</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.TestGame.ToolTip">啟動遊戲並立即開啟即時記錄，方便排查啟動與當機問題。</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileName">啟動 {0}</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileFilter.Shell">Shell 指令碼(*.sh)|*.sh</sys:String>
 </ResourceDictionary>
