@@ -45,7 +45,7 @@ public static class ModDependencyIds
 
 /// <summary>
 ///     一个 Mod 的依赖与当前 mods 目录中提供者的索引，对应 WPF 版 ModJarInJarIndex。
-///     TODO(shion): 内嵌 Mod 的嵌套解析尚未移植，当前只基于顶层文件与已有的 EmbeddedMods 计算。
+///     顶层文件与其 EmbeddedMods（由 Core 扫描时递归读出）共同构成提供者集合。
 /// </summary>
 public sealed class ModJarInJarIndex
 {
@@ -168,7 +168,15 @@ public sealed class ModJarInJarIndex
                 yield return item;
     }
 
+    // Core 把内嵌 Mod 的 ID 也计入外层文件的 Provides；有内嵌树时由内嵌项自己匹配，外层只按自身声明匹配，
+    // 这样依赖才会显示为“由其他 Mod 内嵌提供”，而不是被外层文件直接提供。
     private static bool IdMatches(LocalCompFile file, string depId) =>
         string.Equals(file.ModId, depId, StringComparison.OrdinalIgnoreCase) ||
-        file.Provides.Any(p => string.Equals(p, depId, StringComparison.OrdinalIgnoreCase));
+        (file.Provides.Any(p => string.Equals(p, depId, StringComparison.OrdinalIgnoreCase)) &&
+         !(file.EmbeddedMods ?? []).Any(child => ProvidesWithin(child, depId)));
+
+    private static bool ProvidesWithin(LocalCompFile file, string depId) =>
+        string.Equals(file.ModId, depId, StringComparison.OrdinalIgnoreCase) ||
+        file.Provides.Any(p => string.Equals(p, depId, StringComparison.OrdinalIgnoreCase)) ||
+        (file.EmbeddedMods ?? []).Any(child => ProvidesWithin(child, depId));
 }

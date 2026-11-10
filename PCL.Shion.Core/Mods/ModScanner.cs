@@ -87,9 +87,23 @@ public static class ModScanner
             Sha1 = sha1,
             Provides = metadata.Provides,
             MetadataComplete = budget.Warning is null,
-            ReadWarning = budget.Warning
+            ReadWarning = budget.Warning,
+            Embedded = ToEmbedded(filePath, metadata.Nested)
         };
     }
+
+    private static IReadOnlyList<LocalMod> ToEmbedded(string parentPath, IReadOnlyList<NestedMod> nested) =>
+        nested.Select(mod =>
+        {
+            var path = parentPath + "!/" + mod.EntryName;
+            var metadata = mod.Metadata;
+            return new LocalMod(path, Path.GetFileName(mod.EntryName), true, metadata.Id, metadata.Name,
+                metadata.Version, metadata.Loaders, metadata.Dependencies, "")
+            {
+                Provides = metadata.Provides,
+                Embedded = ToEmbedded(path, metadata.Nested)
+            };
+        }).ToList();
 
     private static LocalMod DescribeFile(string filePath)
     {
