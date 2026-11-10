@@ -1150,10 +1150,6 @@ public partial class PageInstanceExport : MyPageRight
                 ? "HD_U_" + info.OptiFine
                 : null;
 
-            Directory.CreateDirectory(Path.GetDirectoryName(packPath)!);
-            if (File.Exists(packPath))
-                File.Delete(packPath);
-
             if (isModrinth)
             {
                 // 整理文件列表并生成 modrinth.index.json
@@ -1173,13 +1169,13 @@ public partial class PageInstanceExport : MyPageRight
                     Directory.Delete(packRoot, true);
                     loader.Progress = 0.6d;
                     // 二次压缩整合包
-                    ZipFile.CreateFromDirectory(cacheFolder, packPath);
+                    ModpackExporter.CreateArchive(cacheFolder, packPath);
                     loader.Progress = 0.9d;
                 }
                 else
                 {
                     // 直接压缩整合包
-                    ZipFile.CreateFromDirectory(packRoot, packPath);
+                    ModpackExporter.CreateArchive(packRoot, packPath);
                     loader.Progress = 0.8d;
                 }
             }
@@ -1201,7 +1197,7 @@ public partial class PageInstanceExport : MyPageRight
                 }
 
                 loader.Progress = 0.8d;
-                ZipFile.CreateFromDirectory(packRoot, packPath);
+                ModpackExporter.CreateArchive(packRoot, packPath);
             }
 
             Directory.Delete(cacheFolder, true);
