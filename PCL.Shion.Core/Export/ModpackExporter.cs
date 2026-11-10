@@ -102,6 +102,8 @@ public static class ModpackExporter
     public static List<ExportFile> CopyOverrides(string indieRoot, string overridesFolder, IReadOnlyList<string> rules,
         bool checkHostedAssets, IProgress<double>? progress = null)
     {
+        // 即使没有选中文件，也要保留能写入元数据的打包目录。
+        Directory.CreateDirectory(overridesFolder);
         var hosted = new List<ExportFile>();
         var processed = 0;
         var root = new DirectoryInfo(indieRoot);
@@ -149,6 +151,25 @@ public static class ModpackExporter
 
         SearchFolder(root);
         return hosted;
+    }
+
+    /// <summary>先在目标同目录完成压缩，再替换旧包；压缩或提交失败时保留旧包。</summary>
+    public static void CreateArchive(string sourceDirectory, string destination)
+    {
+        destination = Path.GetFullPath(destination);
+        Directory.CreateDirectory(Path.GetDirectoryName(destination)!);
+        var temporaryPath = destination + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            ZipFile.CreateFromDirectory(sourceDirectory, temporaryPath);
+            File.Move(temporaryPath, destination, overwrite: true);
+        }
+        finally
+        {
+            try { File.Delete(temporaryPath); }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException) { }
+        }
     }
 
     /// <summary>

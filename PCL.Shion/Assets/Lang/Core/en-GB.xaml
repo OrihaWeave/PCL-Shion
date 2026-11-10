@@ -804,7 +804,12 @@
 
     <sys:String x:Key="Instance.Export.Error.OperationFailed">An instance export operation failed. See the details below.</sys:String>
     <sys:String x:Key="Instance.Export.ExportTask.Prefix">Export modpack:</sys:String>
+    <sys:String x:Key="Instance.Export.Format">Export format</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Modrinth">Modrinth (.mrpack)</sys:String>
+    <sys:String x:Key="Instance.Export.Format.MultiMC">MultiMC / Prism (.zip)</sys:String>
+    <sys:String x:Key="Instance.Export.Format.Mcbbs">MCBBS (.zip)</sys:String>
     <sys:String x:Key="Instance.Export.ModrinthWarning">Due to Modrinth modpack specifications, exported modpacks will not include OptiFine.</sys:String>
+    <sys:String x:Key="Instance.Export.MultiMcWarning">Due to MultiMC / Prism instance specifications, exported modpacks will not include OptiFine.</sys:String>
     <sys:String x:Key="Instance.Export.MrpackFilter">Modrinth modpack file (*.mrpack)|*.mrpack</sys:String>
     <sys:String x:Key="Instance.Export.NetCheckAllFailed.Message">Failed to obtain file info online. Continue export?&#xA;&#xA;If you continue, all files will be bundled directly.&#xA;Since redistribution may violate usage terms, please avoid publishing the exported modpack!</sys:String>
     <sys:String x:Key="Instance.Export.NetCheckAllFailed.Title">File info retrieval failed</sys:String>
