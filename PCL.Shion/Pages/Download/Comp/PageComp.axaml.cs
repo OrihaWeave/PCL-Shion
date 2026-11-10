@@ -284,7 +284,7 @@ public partial class PageComp : MyScrollViewer
             ? (CompLoaderType)(int)CompVersions.ParseLeadingNumber(CompText.TagOf(ComboSearchLoader.SelectedItem))
             : CompLoaderType.Any;
 
-        request.SearchText = PanSearchBox.Text ?? "";
+        request.SearchText = NormalizeSearchText(PanSearchBox.Text);
         request.GameVersion = gameVersion;
         var selectedTag = CompText.TagOf(ComboSearchTag.SelectedItem);
         var loaderTag = CompText.TagOf(ComboSearchShaderLoader.SelectedItem);
@@ -341,5 +341,22 @@ public partial class PageComp : MyScrollViewer
         {
             throw new Exception(Lang.Text(ex.LangKey, ex.Args));
         }
+    }
+
+    /// <summary>
+    ///     整理搜索词：去掉首尾空白；从列表复制来的“中文名 | English Name”或“English Name | 中文名”只保留英文部分，
+    ///     因为 CurseForge 与 Modrinth 只按英文名称检索（对应上游 PCL-CE #3762）。
+    /// </summary>
+    internal static string NormalizeSearchText(string? text)
+    {
+        var searchText = (text ?? "").Trim();
+        var bar = searchText.IndexOf('|');
+        if (bar < 0)
+            return searchText;
+        if (System.Text.RegularExpressions.Regex.IsMatch(searchText, @"\|.*[\u4e00-\u9fff]"))
+            return searchText[..bar].Trim();
+        if (System.Text.RegularExpressions.Regex.IsMatch(searchText, @"[\u4e00-\u9fff].*\|"))
+            return searchText[(bar + 1)..].Trim();
+        return searchText;
     }
 }

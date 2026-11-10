@@ -23,9 +23,10 @@
                                Padding="7,0,15,0"
                                VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
                                DeltaMult="0.7">
-                <TextBlock VerticalAlignment="Top" TextTrimming="None" TextWrapping="Wrap" x:Name="LabCaption"
-                           FontSize="15" LineHeight="18"
-                           Foreground="{DynamicResource ColorBrush1}" FontWeight="Normal" Padding="1" />
+                <!-- 允许选择与复制弹窗内容，便于反馈错误信息（对应上游 PCL-CE #3734） -->
+                <SelectableTextBlock VerticalAlignment="Top" TextTrimming="None" TextWrapping="Wrap" x:Name="LabCaption"
+                                     FontSize="15" LineHeight="18"
+                                     Foreground="{DynamicResource ColorBrush1}" FontWeight="Normal" Padding="1" />
             </my:MyScrollViewer>
             <StackPanel Grid.Row="4" x:Name="PanBtn" VerticalAlignment="Top" HorizontalAlignment="Right"
                         Margin="150,0,8,0" Orientation="Horizontal">

@@ -36,20 +36,38 @@ public static class CompNaming
         }
         else
         {
-            var cleanName = SanitizeChineseName(chineseName);
-            fileName = nameFormat switch
-            {
-                0 => $"【{cleanName}】{file.FileName}",
-                1 => $"[{cleanName}] {file.FileName}",
-                2 => $"{cleanName}-{file.FileName}",
-                3 => $"{file.FileName}-{cleanName}",
-                _ => file.FileName
-            };
+            fileName = Combine(file.FileName, SanitizeChineseName(chineseName), nameFormat);
         }
 
         if (file.Type == CompType.Mod)
             fileName = fileName.Replace("~", "-");
         return SanitizeFileName(fileName);
+    }
+
+    /// <summary>
+    /// 按命名格式组合原文件名与中文名。格式 3 把中文名放在扩展名之前（xxx-中文名.jar），
+    /// 否则扩展名会被夹在中间，保存出的 Mod 无法被游戏识别（对应上游 PCL-CE #3680）。
+    /// </summary>
+    internal static string Combine(string? fileName, string cleanName, int nameFormat)
+    {
+        fileName ??= "";
+        switch (nameFormat)
+        {
+            case 0:
+                return $"【{cleanName}】{fileName}";
+            case 1:
+                return $"[{cleanName}] {fileName}";
+            case 2:
+                return $"{cleanName}-{fileName}";
+            case 3:
+            {
+                var extension = Path.GetExtension(fileName);
+                var stem = fileName[..^extension.Length];
+                return string.IsNullOrWhiteSpace(stem) ? cleanName + extension : $"{stem}-{cleanName}{extension}";
+            }
+            default:
+                return fileName;
+        }
     }
 
     /// <summary>
