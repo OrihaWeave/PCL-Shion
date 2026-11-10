@@ -25,6 +25,7 @@ using PCL.Shion.Controls;
 using PCL.Shion.Core.Download;
 using PCL.Shion.Core.Platform;
 using PCL.Shion.Localization;
+using PCL.Shion.Services;
 using PCL.Shion.UI;
 
 namespace PCL.Shion.Pages.Tools;
@@ -85,14 +86,17 @@ public partial class PageToolsTest : MyPageRight
         TextDownloadFolder.Validate();
         TextDownloadName.Validate();
         TextDownloadUrl.Validate();
+        TextDownloadHash.Validate();
         StartButtonRefresh();
+        ShowDownloadTasks();
     }
 
     private void StartButtonRefresh()
     {
         BtnDownloadStart.IsEnabled = string.IsNullOrEmpty(TextDownloadFolder.ValidateResult) &&
                                      string.IsNullOrEmpty(TextDownloadUrl.ValidateResult) &&
-                                     string.IsNullOrEmpty(TextDownloadName.ValidateResult);
+                                     string.IsNullOrEmpty(TextDownloadName.ValidateResult) &&
+                                     string.IsNullOrEmpty(TextDownloadHash.ValidateResult);
 
         BtnDownloadOpen.IsEnabled = string.IsNullOrEmpty(TextDownloadFolder.ValidateResult);
 
@@ -160,12 +164,11 @@ public partial class PageToolsTest : MyPageRight
 
             if (Uri.TryCreate(url, UriKind.Absolute, out var uri) && uri.Scheme is "http" or "https")
             {
-                var result = await App.Services.Engine.DownloadAsync(
-                    [new DownloadItem([uri], target)], null, CancellationToken.None);
-                if (result.Succeeded)
-                    Hint.Show(Lang.Text("Tools.Test.CustomDownload.Finished", name), HintType.Success);
+                // 交给多线程下载器，进度显示在下方的任务列表中
+                if (CustomDownloads.Add(uri.AbsoluteUri, target, SelectedConnections(), TextDownloadHash.Text) is null)
+                    Hint.Show(Lang.Text("Tools.Download.AlreadyRunning"), HintType.Error);
                 else
-                    Hint.Show(Lang.Text("Tools.Test.Error.OperationFailed"), HintType.Error);
+                    Hint.Show(Lang.Text("Tools.Download.Started", fileName), HintType.Info);
             }
             else // UNC 路径
             {
@@ -179,6 +182,155 @@ public partial class PageToolsTest : MyPageRight
             Hint.Show(Lang.Text("Tools.Test.Error.OperationFailed"), HintType.Error);
         }
     }
+
+    #region 多线程下载任务列表
+
+    private bool _tasksSubscribed;
+    private readonly Dictionary<CustomDownloadTask, MyListItem> _taskItems = [];
+
+    private int SelectedConnections() =>
+        CmbDownloadConnections.SelectedItem is MyComboBoxItem { Content: string text } &&
+        int.TryParse(text, out var value)
+            ? value
+            : 8;
+
+    /// <summary>显示下载任务列表，并跟随任务的增减与进度刷新。</summary>
+    private void ShowDownloadTasks()
+    {
+        CustomDownloads.EnsureLoaded();
+        if (!_tasksSubscribed)
+        {
+            _tasksSubscribed = true;
+            CustomDownloads.Tasks.CollectionChanged += (_, _) => RebuildDownloadTasks();
+        }
+
+        RebuildDownloadTasks();
+    }
+
+    private void RebuildDownloadTasks()
+    {
+        foreach (var (task, _) in _taskItems)
+            task.Changed -= OnDownloadTaskChanged;
+        _taskItems.Clear();
+        PanDownloadTasks.Children.Clear();
+        PanDownloadTasks.IsVisible = CustomDownloads.Tasks.Count > 0;
+        foreach (var task in CustomDownloads.Tasks)
+        {
+            var item = new MyListItem
+            {
+                IsScaleAnimationEnabled = false,
+                Type = MyListItem.CheckType.None,
+                MinPaddingRight = 30,
+                Height = 42d,
+                Title = task.FileName,
+                SvgIcon = "lucide/download",
+                LogoScale = 0.8d
+            };
+            _taskItems[task] = item;
+            task.Changed += OnDownloadTaskChanged;
+            UpdateDownloadTaskItem(task, item);
+            PanDownloadTasks.Children.Add(item);
+        }
+
+        // 列表增减后卡片按新内容重新计算高度
+        CardDownload.TriggerForceResize();
+    }
+
+    private void OnDownloadTaskChanged(CustomDownloadTask task)
+    {
+        if (_taskItems.TryGetValue(task, out var item))
+            UpdateDownloadTaskItem(task, item);
+    }
+
+    private void UpdateDownloadTaskItem(CustomDownloadTask task, MyListItem item)
+    {
+        item.Info = DescribeDownloadTask(task);
+        var stateKey = task.State.ToString();
+        if (item.Tag as string == stateKey)
+            return;
+        // 按钮只在状态变化时重建，避免进度刷新打断鼠标悬停
+        item.Tag = stateKey;
+        var buttons = new List<MyIconButton>();
+        switch (task.State)
+        {
+            case CustomDownloadState.Waiting or CustomDownloadState.Downloading:
+                buttons.Add(TaskButton("lucide/x", "Tools.Download.Action.Pause", () => CustomDownloads.Pause(task)));
+                break;
+            case CustomDownloadState.Paused or CustomDownloadState.Failed:
+                buttons.Add(TaskButton(task.State == CustomDownloadState.Failed ? "lucide/refresh-cw" : "lucide/play",
+                    task.State == CustomDownloadState.Failed ? "Tools.Download.Action.Retry" : "Tools.Download.Action.Resume",
+                    () => CustomDownloads.Resume(task)));
+                break;
+            case CustomDownloadState.Completed:
+                buttons.Add(TaskButton("lucide/folder-open", "Common.Action.OpenFolder", () =>
+                {
+                    try
+                    {
+                        SystemShell.OpenFolder(Path.GetDirectoryName(task.TargetPath)!);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogError(ex, "打开下载文件夹失败");
+                    }
+                }));
+                break;
+        }
+
+        buttons.Add(TaskButton("lucide/trash-2", "Tools.Download.Action.Remove", () => CustomDownloads.Remove(task)));
+        item.Buttons = buttons;
+    }
+
+    private static MyIconButton TaskButton(string icon, string tipKey, Action action)
+    {
+        var button = new MyIconButton { SvgIcon = icon, LogoScale = 1d };
+        ToolTip.SetTip(button, Lang.Text(tipKey));
+        button.Click += (_, _) => action();
+        return button;
+    }
+
+    private static string DescribeDownloadTask(CustomDownloadTask task)
+    {
+        var progress = task.Progress;
+        string Size() => progress is null
+            ? ""
+            : progress.TotalBytes is { } total
+                ? $"{ByteFormatter.Format(progress.DownloadedBytes)} / {ByteFormatter.Format(total)}"
+                : ByteFormatter.Format(progress.DownloadedBytes);
+        switch (task.State)
+        {
+            case CustomDownloadState.Waiting:
+                return Lang.Text("Tools.Download.State.Waiting");
+            case CustomDownloadState.Downloading:
+            {
+                if (progress is null)
+                    return Lang.Text("Tools.Download.State.Connecting");
+                var parts = new List<string>();
+                if (progress.TotalBytes is > 0 and var total)
+                    parts.Add(Lang.Number((double)progress.DownloadedBytes / total, "P1"));
+                parts.Add(Size());
+                parts.Add(ByteFormatter.FormatSpeed(progress.BytesPerSecond));
+                if (progress.Remaining is { } remaining)
+                    parts.Add(Lang.Text("Tools.Download.Remaining", FormatDuration(remaining)));
+                parts.Add(Lang.Text("Tools.Download.ConnectionCount", progress.Connections));
+                return string.Join(" · ", parts);
+            }
+            case CustomDownloadState.Paused:
+                return SegmentedDownloader.HasPartial(task.TargetPath)
+                    ? Lang.Text("Tools.Download.State.PausedResumable", Size())
+                    : Lang.Text("Tools.Download.State.Paused");
+            case CustomDownloadState.Failed:
+                return Lang.Text("Tools.Download.State.Failed", task.Error ?? "");
+            default:
+                return Lang.Text("Tools.Download.State.Completed", task.TargetPath);
+        }
+    }
+
+    private static string FormatDuration(TimeSpan duration) =>
+        duration.TotalHours >= 1
+            ? $"{(int)duration.TotalHours}:{duration.Minutes:00}:{duration.Seconds:00}"
+            : $"{duration.Minutes:00}:{duration.Seconds:00}";
+
+    #endregion
 
     public static void Jrrp()
     {
@@ -864,6 +1016,32 @@ public class FolderPathValidator : AbstractValidator<string>
             .Must(x => x is null || !x.EndsWith('.')).WithMessage("文件夹名不能以小数点结尾！")
             .Must(x => x is null || x.IndexOfAny(Path.GetInvalidPathChars()) < 0).WithMessage("文件夹路径包含非法字符！")
             .Must(x => x is null || x.IndexOfAny(['!', ';']) < 0).WithMessage("文件夹路径不可包含 ! 或 ; 字符！");
+    }
+}
+
+/// <summary>
+///     可选的哈希校验值：留空，或 32、40、64、128 位十六进制（MD5、SHA-1、SHA-256、SHA-512）。
+/// </summary>
+public class HashValidator : AbstractValidator<string>
+{
+    public HashValidator()
+    {
+        RuleFor(x => x)
+            .Must(x => string.IsNullOrWhiteSpace(x) || IsSupported(x.Trim()))
+            .WithMessage(_ => Lang.Text("Tools.Download.Hash.Invalid"));
+    }
+
+    private static bool IsSupported(string hash)
+    {
+        try
+        {
+            SegmentedDownloader.AlgorithmOf(hash);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
     }
 }
 

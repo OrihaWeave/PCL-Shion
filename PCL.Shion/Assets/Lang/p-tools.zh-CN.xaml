@@ -1,0 +1,23 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Tools.Download.Connections">连接数</sys:String>
+    <sys:String x:Key="Tools.Download.Hash">校验值</sys:String>
+    <sys:String x:Key="Tools.Download.Hash.ToolTip">可选。填入 MD5、SHA-1、SHA-256 或 SHA-512，下载完成后会自动校验。</sys:String>
+    <sys:String x:Key="Tools.Download.Hash.Invalid">校验值应为 32、40、64 或 128 位十六进制数！</sys:String>
+    <sys:String x:Key="Tools.Download.AlreadyRunning">这个文件已经在下载中了！</sys:String>
+    <sys:String x:Key="Tools.Download.Started">已开始下载 {0}，进度显示在下方</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Pause">暂停（保留已下载部分）</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Resume">继续下载</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Retry">重试</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Remove">移除任务</sys:String>
+    <sys:String x:Key="Tools.Download.State.Waiting">排队中</sys:String>
+    <sys:String x:Key="Tools.Download.State.Connecting">正在连接……</sys:String>
+    <sys:String x:Key="Tools.Download.State.Paused">已暂停</sys:String>
+    <sys:String x:Key="Tools.Download.State.PausedResumable">已暂停，可以继续 · {0}</sys:String>
+    <sys:String x:Key="Tools.Download.State.Failed">下载失败：{0}</sys:String>
+    <sys:String x:Key="Tools.Download.State.Completed">已完成 · {0}</sys:String>
+    <sys:String x:Key="Tools.Download.Remaining">剩余 {0}</sys:String>
+    <sys:String x:Key="Tools.Download.ConnectionCount">{0} 个连接</sys:String>
+    <sys:String x:Key="Tools.Download.Error.HashMismatch">校验值不符，期望 {0}，实际 {1}</sys:String>
+</ResourceDictionary>
