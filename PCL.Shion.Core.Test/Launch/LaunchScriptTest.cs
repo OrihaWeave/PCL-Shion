@@ -86,7 +86,8 @@ public sealed class LaunchScriptTest
             // 假的 Java：把工作目录、环境变量与每个参数各写一行
             File.WriteAllText(fakeJava,
                 "#!/bin/sh\npwd > \"$OUT\"\nprintf '%s\\n' \"$SHION_TEST\" >> \"$OUT\"\nfor a in \"$@\"; do printf '[%s]\\n' \"$a\" >> \"$OUT\"; done\n");
-            File.SetUnixFileMode(fakeJava, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
+            if (!OperatingSystem.IsWindows())
+                File.SetUnixFileMode(fakeJava, UnixFileMode.UserRead | UnixFileMode.UserWrite | UnixFileMode.UserExecute);
 
             var plan = CreatePlan(fakeJava, TrickyArguments, workDir,
                 new Dictionary<string, string> { ["OUT"] = output, ["SHION_TEST"] = "it's $fine", ["bad-name"] = "x" });

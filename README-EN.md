@@ -84,7 +84,7 @@ Windows uses a single executable. On Linux, extract the archive and run `PCL.Shi
 
 ### Known Feature Differences
 
-Avalonia is the default entry point, but does not yet match every historical WPF feature. **Launch script export and test-mode launch are not implemented**; their buttons are disabled with an explanation. Use the launch page for normal game launch. See [validation results](docs/validation.md) for remaining acceptance checks and test coverage.
+Avalonia is the default entry point, but does not yet match every historical WPF feature. Launch script export and test launch are available on the instance overview page: Windows exports a batch file, macOS and Linux export a shell script, and online access tokens are masked, so exported scripts usually only work with offline profiles. Runtime custom homepage XAML, installers for some loaders and online mod updates are still missing. See [validation results](docs/validation.md) for remaining acceptance checks and test coverage.
 
 ## 🛠️ Build
 
