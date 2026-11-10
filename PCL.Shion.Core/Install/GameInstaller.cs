@@ -40,11 +40,21 @@ public sealed class GameInstaller(DownloadEngine engine, DownloadSource source)
     {
         cancellationToken.ThrowIfCancellationRequested();
         using var installation = InstallationSession.Begin(minecraftRoot, instanceName);
+        await InstallVanillaInSessionAsync(minecraftRoot, version, instanceName, installation, progress, cancellationToken)
+            .ConfigureAwait(false);
+    }
+
+    internal async Task InstallVanillaInSessionAsync(
+        string minecraftRoot, RemoteVersion version, string instanceName, InstallationSession installation,
+        IProgress<InstallProgress>? progress, CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        installation.EnsureOwns(minecraftRoot, instanceName);
         var jsonPath = Path.Combine(minecraftRoot, "versions", instanceName, $"{instanceName}.json");
         var versionJson = new DownloadItem(MirrorUrls.Resolve(version.JsonUrl.AbsoluteUri, source), jsonPath, Sha1: version.Sha1);
         ThrowIfFailed(await engine.DownloadAsync([versionJson], BeginStage(progress, VersionStage), cancellationToken).ConfigureAwait(false));
         if (instanceName != version.Id)
-            RenameVersion(jsonPath, instanceName);
+            RenameVersion(jsonPath, instanceName, version.Id);
 
         ThrowIfFailed(await CompleteAsync(minecraftRoot, instanceName, progress, cancellationToken).ConfigureAwait(false));
     }
@@ -83,10 +93,11 @@ public sealed class GameInstaller(DownloadEngine engine, DownloadSource source)
     /// <summary>
     /// 把版本 JSON 的 id 改为实例名，与所在目录保持一致。
     /// </summary>
-    private static void RenameVersion(string jsonPath, string instanceName)
+    private static void RenameVersion(string jsonPath, string instanceName, string minecraftVersion)
     {
         var root = JsonNode.Parse(File.ReadAllText(jsonPath))!.AsObject();
         root["id"] = instanceName;
+        root["clientVersion"] = minecraftVersion;
         AtomicFile.WriteAllText(jsonPath, root.ToJsonString(JsonWriteOptions));
     }
 

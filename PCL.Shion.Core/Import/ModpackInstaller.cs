@@ -12,8 +12,8 @@ namespace PCL.Shion.Core.Import;
 /// 按 <see cref="ModpackPlan"/> 把整合包安装为新实例。
 /// </summary>
 /// <remarks>
-/// 先把 overrides 与需要下载的文件放进实例目录，最后安装原版或加载器并写出版本 JSON。
-/// 版本 JSON 出现之前实例不会被扫描到，因此用户不会看到装到一半的实例。安装失败时删除整个新建的实例目录。
+/// 先下载文件，再按顺序应用 overrides，最后安装游戏并保存白名单设置。
+/// 整个过程持有目标安装会话，避免扫描到半成品或与其他安装互相清理。
 /// </remarks>
 public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource source)
 {
@@ -44,10 +44,12 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
         IProgress<InstallProgress>? progress,
         CancellationToken cancellationToken)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         InstallationSession.ValidateInstanceName(instanceName);
         if (plan.Loader is not null && string.Equals(instanceName, plan.MinecraftVersion, StringComparison.OrdinalIgnoreCase))
             throw new ArgumentException("The instance name must differ from the Minecraft version it inherits from.", nameof(instanceName));
 
+        using var installation = InstallationSession.Begin(minecraftRoot, instanceName);
         var instanceDirectory = Path.GetFullPath(Path.Combine(minecraftRoot, "versions", instanceName));
         if (Directory.Exists(instanceDirectory) || File.Exists(instanceDirectory))
             throw new IOException($"Instance '{instanceName}' already exists.");
@@ -55,10 +57,6 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
         Directory.CreateDirectory(instanceDirectory);
         try
         {
-            progress?.Report(new InstallProgress(OverridesStage, null));
-            using (var archive = ModpackReader.OpenArchive(archivePath))
-                ExtractOverrides(archive, plan.OverrideFolders, instanceDirectory, cancellationToken);
-
             if (plan.Files.Count > 0)
             {
                 var items = plan.Files
@@ -73,10 +71,14 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
                     throw new InstallException(result);
             }
 
-            await InstallGameAsync(plan, minecraftRoot, instanceName, javaExecutable, progress, cancellationToken).ConfigureAwait(false);
+            progress?.Report(new InstallProgress(OverridesStage, null));
+            using (var archive = ModpackReader.OpenArchive(archivePath))
+                ExtractOverrides(archive, plan.OverrideFolders, instanceDirectory, cancellationToken);
 
-            var settings = InstanceStore.Load(minecraftRoot, instanceName);
-            settings.Isolated = true;
+            await InstallGameAsync(plan, minecraftRoot, instanceName, javaExecutable, installation, progress, cancellationToken).ConfigureAwait(false);
+
+            // 包中的启动器配置不可信；只迁移明确支持的整合包设置。
+            var settings = new InstanceSettings { Isolated = true };
             if (plan.MemoryMb is { } memory)
                 settings.MaxMemoryMb = memory;
             if (plan.JvmArguments is { } jvmArguments)
@@ -97,13 +99,14 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
         string minecraftRoot,
         string instanceName,
         string javaExecutable,
+        InstallationSession installation,
         IProgress<InstallProgress>? progress,
         CancellationToken cancellationToken)
     {
         if (plan.Loader is { } loader)
         {
             await new LoaderInstaller(engine, source)
-                .InstallAsync(minecraftRoot, loader, instanceName, javaExecutable, progress, cancellationToken)
+                .InstallInSessionAsync(minecraftRoot, loader, instanceName, javaExecutable, installation, progress, cancellationToken)
                 .ConfigureAwait(false);
             return;
         }
@@ -112,7 +115,7 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
         var version = manifest.Versions.FirstOrDefault(item => item.Id == plan.MinecraftVersion)
                       ?? throw new ArgumentException($"Minecraft version '{plan.MinecraftVersion}' is not in the version manifest.", nameof(plan));
         await new GameInstaller(engine, source)
-            .InstallVanillaAsync(minecraftRoot, version, instanceName, progress, cancellationToken)
+            .InstallVanillaInSessionAsync(minecraftRoot, version, instanceName, installation, progress, cancellationToken)
             .ConfigureAwait(false);
     }
 
@@ -156,6 +159,11 @@ public sealed class ModpackInstaller(DownloadEngine engine, DownloadSource sourc
         var target = Path.GetFullPath(Path.Combine(root, checkedPath.Replace('/', Path.DirectorySeparatorChar)));
         if (!target.StartsWith(root, StringComparison.Ordinal))
             throw new InvalidDataException($"The modpack contains an unsafe path: '{relativePath}'.");
+        // 在规范化后的目标检查，覆盖 ./、反斜杠、大小写及 Windows 尾点/空格别名。
+        // 整个控制目录（包括备份）都属于启动器，包内容和下载清单都不能写入。
+        var firstSegment = Path.GetRelativePath(root, target).Replace('\\', '/').Split('/')[0].TrimEnd(' ', '.');
+        if (firstSegment.Equals("PCL Shion", StringComparison.OrdinalIgnoreCase))
+            throw new InvalidDataException($"Modpack files cannot write launcher-owned settings: '{relativePath}'.");
         return target;
     }
 

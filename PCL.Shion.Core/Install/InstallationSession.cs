@@ -38,6 +38,14 @@ internal sealed class InstallationSession : IDisposable
             return Active.Contains(Path.GetFullPath(directory));
     }
 
+    /// <summary>复合安装只能复用自己持有的目标会话，不能跳过另一实例的互斥。</summary>
+    internal void EnsureOwns(string minecraftRoot, string instanceName)
+    {
+        var directory = Path.GetFullPath(Path.Combine(minecraftRoot, "versions", instanceName));
+        if (Volatile.Read(ref _disposed) != 0 || !Active.Comparer.Equals(_directory, directory))
+            throw new InvalidOperationException("The installation session does not own this instance.");
+    }
+
     internal static void ValidateInstanceName(string instanceName)
     {
         if (string.IsNullOrWhiteSpace(instanceName) || instanceName is "." or ".."

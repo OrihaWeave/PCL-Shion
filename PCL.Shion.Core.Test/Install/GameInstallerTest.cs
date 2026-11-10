@@ -63,6 +63,7 @@ public sealed class GameInstallerTest
 
         var json = JsonNode.Parse(File.ReadAllText(_root.GetPath("versions/My World/My World.json")))!;
         Assert.AreEqual("My World", json["id"]!.GetValue<string>());
+        Assert.AreEqual(VersionId, VersionResolver.Resolve(_root.RootPath, "My World").MinecraftVersion);
         Assert.AreEqual("net.minecraft.client.main.Main", json["mainClass"]!.GetValue<string>());
         Assert.AreEqual(ClientUrl, json["downloads"]!["client"]!["url"]!.GetValue<string>());
         CollectionAssert.AreEqual(ClientJar, File.ReadAllBytes(_root.GetPath("versions/My World/My World.jar")));
