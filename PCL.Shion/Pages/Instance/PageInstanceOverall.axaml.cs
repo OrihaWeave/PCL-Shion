@@ -8,11 +8,14 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using PCL.Shion.Controls;
+using PCL.Shion.Core.Accounts;
 using PCL.Shion.Core.Instances;
+using PCL.Shion.Core.Launch;
 using PCL.Shion.Core.Minecraft;
 using PCL.Shion.Core.Platform;
 using PCL.Shion.Localization;
 using PCL.Shion.Navigation;
+using PCL.Shion.Pages.Launch;
 using PCL.Shion.Pages.Select;
 using PCL.Shion.Services;
 using PCL.Shion.UI;
@@ -50,6 +53,8 @@ public partial class PageInstanceOverall : MyPageRight
         BtnManageRestore.Click += BtnManageRestore_Click;
         BtnManageDelete.Click += BtnManageDelete_Click;
         BtnManagePatch.Click += BtnManagePatch_Click;
+        BtnManageScript.Click += BtnManageScript_Click;
+        BtnManageTest.Click += BtnManageTest_Click;
     }
 
     private static AppSettings Settings => App.Services.Settings;
@@ -503,6 +508,47 @@ public partial class PageInstanceOverall : MyPageRight
         }
         catch (OperationCanceledException)
         {
+        }
+        catch (Exception)
+        {
+            HintService.Hint(Lang.Text("Instance.Overall.Error.OperationFailed"), HintType.Error);
+        }
+    }
+
+    // 导出启动脚本
+    private async void BtnManageScript_Click(object? sender, PointerReleasedEventArgs e)
+    {
+        try
+        {
+            var instance = PageInstanceLeft.McInstance!;
+            var kind = LaunchScript.DefaultKind;
+            var savePath = await SystemDialogs.SelectSaveFileAsync(
+                Lang.Text("Instance.Overall.Script.SelectSaveTitle"),
+                Lang.Text("Instance.Overall.Script.FileName", instance.Name) + LaunchScript.ExtensionOf(kind),
+                Lang.Text(kind == LaunchScriptKind.WindowsBatch
+                    ? "Instance.Overall.Script.FileFilter"
+                    : "Instance.Overall.Script.FileFilter.Shell"));
+            if (string.IsNullOrEmpty(savePath))
+                return;
+
+            // 等用户选完位置，可能已经有别的启动任务开始了，StartFromElsewhere 会检查并提示
+            if (PageLaunchLeft.StartFromElsewhere(new PageLaunchLeft.LaunchOptions(instance, ScriptPath: savePath)))
+                HintService.Hint(Lang.Text(ProfileService.Current?.ProfileType == ProfileType.Offline
+                    ? "Instance.Overall.Script.Exporting"
+                    : "Instance.Overall.Script.ExportingWarning"));
+        }
+        catch (Exception)
+        {
+            HintService.Hint(Lang.Text("Instance.Overall.Script.ExportFailed"), HintType.Error);
+        }
+    }
+
+    // 测试游戏：启动并直接打开实时日志
+    private void BtnManageTest_Click(object? sender, PointerReleasedEventArgs e)
+    {
+        try
+        {
+            PageLaunchLeft.StartFromElsewhere(new PageLaunchLeft.LaunchOptions(PageInstanceLeft.McInstance!, IsTest: true));
         }
         catch (Exception)
         {

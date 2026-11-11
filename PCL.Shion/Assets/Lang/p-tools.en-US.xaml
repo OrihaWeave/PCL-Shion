@@ -1,0 +1,35 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=System.Runtime">
+    <sys:String x:Key="Tools.Download.Connections">Connections</sys:String>
+    <sys:String x:Key="Tools.Download.Hash">Checksum</sys:String>
+    <sys:String x:Key="Tools.Download.Hash.ToolTip">Optional. Enter an MD5, SHA-1, SHA-256 or SHA-512 hash to verify the file after downloading.</sys:String>
+    <sys:String x:Key="Tools.Download.Hash.Invalid">The checksum must be 32, 40, 64 or 128 hexadecimal characters!</sys:String>
+    <sys:String x:Key="Tools.Download.AlreadyRunning">This file is already being downloaded!</sys:String>
+    <sys:String x:Key="Tools.Download.Started">Started downloading {0}. Progress is shown below.</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Pause">Pause (keeps downloaded data)</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Resume">Resume</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Retry">Retry</sys:String>
+    <sys:String x:Key="Tools.Download.Action.Remove">Remove</sys:String>
+    <sys:String x:Key="Tools.Download.State.Waiting">Queued</sys:String>
+    <sys:String x:Key="Tools.Download.State.Connecting">Connecting...</sys:String>
+    <sys:String x:Key="Tools.Download.State.Paused">Paused</sys:String>
+    <sys:String x:Key="Tools.Download.State.PausedResumable">Paused, can be resumed · {0}</sys:String>
+    <sys:String x:Key="Tools.Download.State.Failed">Download failed: {0}</sys:String>
+    <sys:String x:Key="Tools.Download.State.Completed">Completed · {0}</sys:String>
+    <sys:String x:Key="Tools.Download.Remaining">{0} left</sys:String>
+    <sys:String x:Key="Tools.Download.ConnectionCount">{0} connections</sys:String>
+    <sys:String x:Key="Tools.Download.Error.HashMismatch">Checksum mismatch: expected {0}, got {1}</sys:String>
+    <sys:String x:Key="Tools.Seed.Title">World seed viewer</sys:String>
+    <sys:String x:Key="Tools.Seed.Description">Reads a world's level.dat and shows its seed and basic information. The world is never modified.</sys:String>
+    <sys:String x:Key="Tools.Seed.World">World</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse">Browse</sys:String>
+    <sys:String x:Key="Tools.Seed.Browse.Title">Select a world folder (containing level.dat)</sys:String>
+    <sys:String x:Key="Tools.Seed.NoInstance">No instance is selected. Use Browse to open a world folder directly.</sys:String>
+    <sys:String x:Key="Tools.Seed.NoWorlds">The current instance has no worlds yet. Use Browse to open another world folder.</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.NoLevelDat">This folder has no level.dat and is not a world folder: {0}</sys:String>
+    <sys:String x:Key="Tools.Seed.Error.Unreadable">level.dat could not be read and may be corrupted: {0}</sys:String>
+    <sys:String x:Key="Tools.Seed.UnknownVersion">Unknown (world from before 1.9)</sys:String>
+    <sys:String x:Key="Tools.Seed.Copy">Click to copy the seed</sys:String>
+    <sys:String x:Key="Tools.Seed.Copied">Seed copied to the clipboard</sys:String>
+</ResourceDictionary>

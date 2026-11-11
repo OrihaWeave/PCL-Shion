@@ -33,4 +33,10 @@ public sealed record LocalMod(
 
     /// <summary>该文件的读取或解析问题；不妨碍用户在列表中禁用、删除这个文件。</summary>
     public string? ReadWarning { get; init; }
+
+    /// <summary>
+    /// 内嵌（Jar-in-Jar）的 Mod，可以继续嵌套。内嵌项的 <see cref="FilePath"/> 形如 <c>外层路径!/META-INF/jars/x.jar</c>，
+    /// <see cref="Enabled"/> 恒为 true（是否加载取决于外层文件），<see cref="Sha1"/> 为空。
+    /// </summary>
+    public IReadOnlyList<LocalMod> Embedded { get; init; } = [];
 }

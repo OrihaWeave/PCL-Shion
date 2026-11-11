@@ -229,7 +229,7 @@ public partial class PageInstanceSavesInfo : MyPageRight, IRefreshable
     private static int? GetSelectedTag(MyComboBox combo) =>
         combo.SelectedItem is MyComboBoxItem { Tag: int value } ? value : null;
 
-    private static string GameModeName(GameMode mode) => mode switch
+    internal static string GameModeName(GameMode mode) => mode switch
     {
         GameMode.Hardcore => Lang.Text("Instance.Saves.Info.GameMode.Hardcore"),
         GameMode.Creative => Lang.Text("Instance.Saves.Info.GameMode.Creative"),
@@ -320,7 +320,7 @@ public partial class PageInstanceSavesInfo : MyPageRight, IRefreshable
         }
     }
 
-    private static void OpenChunkbase(string seed, string? versionName)
+    internal static void OpenChunkbase(string seed, string? versionName)
     {
         try
         {

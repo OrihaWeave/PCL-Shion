@@ -44,8 +44,7 @@ public static class ModLocalComp
     }
 
     /// <summary>
-    ///     内嵌（Jar-in-Jar）依赖是否已完成解析。
-    ///     TODO(shion): Shion 尚未移植内嵌 Mod 的嵌套解析（WPF 版 ModLocalComp 的 JIJ 流程），当前恒为已完成且不含内嵌项。
+    ///     内嵌（Jar-in-Jar）依赖是否已完成解析。Shion 在扫描每个文件时同步读出内嵌项，因此恒为已完成。
     /// </summary>
     public static bool CompJijResolved = true;
 
@@ -246,8 +245,11 @@ public static class ModLocalComp
         /// <summary>检测到的可用更新，没有时为 null。TODO(shion): 更新检测尚未接入 Shion 的网络层。</summary>
         public CompFile? UpdateFile { get; internal set; }
 
-        /// <summary>内嵌（Jar-in-Jar）的 Mod。TODO(shion): 嵌套解析尚未移植，目前恒为空。</summary>
+        /// <summary>内嵌（Jar-in-Jar）的 Mod，由 Core 扫描时一并读出；没有内嵌项或未解析元数据时为 null。</summary>
         public List<LocalCompFile>? EmbeddedMods { get; set; }
+
+        /// <summary>内嵌项所在的外层文件；顶层文件为 null。内嵌项的启用状态跟随外层文件。</summary>
+        public LocalCompFile? Host { get; private set; }
 
         /// <summary>内嵌 Mod 的加载器信息。</summary>
         public string? JijLoader { get; internal set; }
@@ -290,6 +292,7 @@ public static class ModLocalComp
                 _mod = ModScanner.Read(path,
                     new ModScanOptions { ParseMetadata = parseMetadata ?? App.Services?.Settings.EnableModMetadataParsing ?? true },
                     cancellationToken);
+                EmbeddedMods = CreateEmbedded(_mod, this);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -301,11 +304,27 @@ public static class ModLocalComp
         /// <summary>
         ///     由 Core 扫描得到的 Mod 信息构造。
         /// </summary>
-        public LocalCompFile(LocalMod mod)
+        public LocalCompFile(LocalMod mod) : this(mod, null)
+        {
+        }
+
+        private LocalCompFile(LocalMod mod, LocalCompFile? host)
         {
             _mod = mod;
             path = mod.FilePath;
+            Host = host;
+            EmbeddedMods = CreateEmbedded(mod, this);
+            if (host is null)
+                return;
+            JijLoader = mod.Loaders.Count == 0 ? null : string.Join("/", mod.Loaders);
+            JijTargetMcVersion = mod.Dependencies
+                .FirstOrDefault(d => string.Equals(d.Id, "minecraft", StringComparison.OrdinalIgnoreCase))?.VersionRange;
+            JijIdentifier = mod.Id;
+            JijArtifactVersion = mod.Version;
         }
+
+        private static List<LocalCompFile>? CreateEmbedded(LocalMod mod, LocalCompFile host) =>
+            mod.Embedded.Count == 0 ? null : mod.Embedded.Select(e => new LocalCompFile(e, host)).ToList();
 
         /// <summary>是否为文件夹项。</summary>
         public bool IsFolder => path.EndsWith(FolderSuffix, StringComparison.OrdinalIgnoreCase);
@@ -338,6 +357,8 @@ public static class ModLocalComp
             {
                 if (IsFolder)
                     return LocalFileStatus.Fine;
+                if (Host is not null)
+                    return Host.State;
                 if (_unavailable)
                     return LocalFileStatus.Unavailable;
                 var name = FileName.ToLowerInvariant();
@@ -521,7 +542,9 @@ public static class ModLocalComp
             Comp = other.Comp;
             compFile = other.compFile;
             UpdateFile = other.UpdateFile;
-            EmbeddedMods = other.EmbeddedMods;
+            // 只在本次没有读到内嵌项时沿用旧结果，并让它们跟随新的外层文件
+            if (EmbeddedMods is null && other._mod is not null)
+                EmbeddedMods = CreateEmbedded(other._mod, this);
             JijLoader = other.JijLoader;
             JijTargetMcVersion = other.JijTargetMcVersion;
             JijIdentifier = other.JijIdentifier;

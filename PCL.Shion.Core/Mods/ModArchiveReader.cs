@@ -29,13 +29,20 @@ internal static class ModArchiveReader
         AddFormat(parsed, archive, "META-INF/mods.toml", toml => ModMetadataParser.ParseForge(toml, false), budget);
         AddFormat(parsed, archive, "mcmod.info", ModMetadataParser.ParseLegacy, budget);
 
+        var nested = ReadNested(archive, budget, depth);
+        var nestedIds = nested.SelectMany(mod => mod.Metadata.Id is { } id
+            ? mod.Metadata.Provides.Prepend(id)
+            : mod.Metadata.Provides);
         return new ModMetadata(
             parsed.Select(metadata => metadata.Id).FirstOrDefault(id => id is not null),
             parsed.Select(metadata => metadata.Name).FirstOrDefault(name => name is not null),
             parsed.Select(metadata => metadata.Version).FirstOrDefault(version => version is not null),
             parsed.SelectMany(metadata => metadata.Loaders).Distinct().ToList(),
             parsed.SelectMany(metadata => metadata.Dependencies).DistinctBy(dependency => dependency.Id).ToList(),
-            parsed.SelectMany(metadata => metadata.Provides).Concat(ReadNestedIds(archive, budget, depth)).Distinct().ToList());
+            parsed.SelectMany(metadata => metadata.Provides).Concat(nestedIds).Distinct().ToList())
+        {
+            Nested = nested
+        };
     }
 
     private static void AddFormat(List<ModMetadata> parsed, ZipArchive archive, string entryName, Func<string, ModMetadata> parse,
@@ -81,9 +88,9 @@ internal static class ModArchiveReader
     }
 
     // 内嵌的 jar 也是 Mod（例如 Fabric API 的各个模块），其他 Mod 可以依赖它们
-    private static List<string> ReadNestedIds(ZipArchive archive, ModReadBudget budget, int depth)
+    private static List<NestedMod> ReadNested(ZipArchive archive, ModReadBudget budget, int depth)
     {
-        var ids = new List<string>();
+        var mods = new List<NestedMod>();
         foreach (var entry in archive.Entries.Where(IsNestedJar))
         {
             budget.CancellationToken.ThrowIfCancellationRequested();
@@ -96,10 +103,7 @@ internal static class ModArchiveReader
                     continue;
 
                 using var nestedArchive = new ZipArchive(buffer, ZipArchiveMode.Read);
-                var nested = Read(nestedArchive, budget, depth + 1);
-                if (nested.Id is not null)
-                    ids.Add(nested.Id);
-                ids.AddRange(nested.Provides);
+                mods.Add(new NestedMod(entry.FullName, Read(nestedArchive, budget, depth + 1)));
             }
             catch (InvalidDataException ex)
             {
@@ -107,7 +111,7 @@ internal static class ModArchiveReader
                 budget.Warn(ex.Message);
             }
         }
-        return ids;
+        return mods;
     }
 
     private static bool IsNestedJar(ZipArchiveEntry entry) =>

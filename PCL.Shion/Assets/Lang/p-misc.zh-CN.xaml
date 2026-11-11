@@ -7,4 +7,8 @@
     <sys:String x:Key="Setup.Language.Banner.TranslateWebsite">前往翻译网站</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.News">显示 Minecraft 新闻</sys:String>
     <sys:String x:Key="Setup.UI.Sidebar.Hint">勾选的项目会以小组件的形式显示在启动页右侧。</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.ExportLaunchScript.ToolTip">使用当前档案与实例设置生成启动脚本，可以不经过启动器直接启动游戏。&#xA;正版登录令牌会被打码，因此脚本通常只适用于离线档案。</sys:String>
+    <sys:String x:Key="Instance.Overall.Manage.TestGame.ToolTip">启动游戏并立即打开实时日志，便于排查启动与崩溃问题。</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileName">启动 {0}</sys:String>
+    <sys:String x:Key="Instance.Overall.Script.FileFilter.Shell">Shell 脚本(*.sh)|*.sh</sys:String>
 </ResourceDictionary>

@@ -6,6 +6,21 @@
 
 GitHub 仓库元数据的 `parent` 与 `source` 均为 [PCL-Community/PCL-CE](https://github.com/PCL-Community/PCL-CE)。本仓库 README 说明更早来源是 [Meloong-Git/PCL](https://github.com/Meloong-Git/PCL)。以下优先检查直接上游的实际 issue、PR 内容与状态，再与 Shion 的 Avalonia 实现比对；没有把 WPF 修复自动视作新前端的同一个缺陷，也没有机械合并上游分支。
 
+## 2026-11-10 补充调研
+
+对照上游 `PCL-Community/PCL-CE` 的 `dev`（截至 2026-11-10 的 51 个新提交，自 PR #3684 起）。其中大部分是 WPF 界面的 MVVM 重构、DialogService 迁移、样式与动画修补、Sentry 与 Java 模块重构，与 Shion 的 Avalonia 前端和独立 Core 没有对应代码，不移植。
+
+| 来源 | 内容 | Shion 处理 |
+|---|---|---|
+| [PR #3762](https://github.com/PCL-Community/PCL-CE/pull/3762) | 资源搜索忽略竖线与中文别名 | 已移植：`PageComp.NormalizeSearchText`，`SearchTextTest` 覆盖。 |
+| [PR #3734](https://github.com/PCL-Community/PCL-CE/pull/3734) | 弹窗正文可选择、复制 | 已移植：`MyMsgText` 正文改用 `SelectableTextBlock`。 |
+| [PR #3680](https://github.com/PCL-Community/PCL-CE/pull/3680) | “原名-中文名”格式把扩展名夹在中间 | 已确认 Shion 的 `CompNaming` 有同样问题并修复，`CompNamingTest` 覆盖。 |
+| [PR #3780](https://github.com/PCL-Community/PCL-CE/pull/3780) | 实例重命名后旧目录被重新创建 | 不移植：根因是 WPF 配置缓存，Shion 的 `InstanceManager.Rename` 不使用该缓存。 |
+| [PR #3710](https://github.com/PCL-Community/PCL-CE/pull/3710)、[PR #3738](https://github.com/PCL-Community/PCL-CE/pull/3738) | 按实例禁止模组更新、更新同名模组失败 | 延后：Shion 的在线模组更新链仍未接入，理由同上表 #3548。 |
+| [PR #3741](https://github.com/PCL-Community/PCL-CE/pull/3741) | 崩溃报告中的日志改用 .log 扩展名 | 不适用：Shion 尚无对应的崩溃报告导出。 |
+
+同期补齐的 Shion 功能：实例概览页的“导出启动脚本”与“测试游戏”（README 原列为已知差异）；百宝箱的可续传多线程下载器（本仓库 #7）与世界种子查看（本仓库 #8）；Core 读出完整的 Jar-in-Jar 内嵌树并接入兼容层与“内嵌模组”视图（本仓库 #3，沿用上表 #3441 的预算与容错原则，不移植上游的依赖图缓存）。
+
 ## 筛选表
 
 | 来源 | 调研时上游状态 | 需求 / 缺陷与取舍 | Shion 整合位置 / 验收 | 本次状态 |

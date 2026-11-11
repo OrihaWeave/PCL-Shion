@@ -287,6 +287,35 @@ public sealed class ModScannerTest
     }
 
     [TestMethod]
+    public void Read_ExposesTheTreeOfNestedMods()
+    {
+        var inner = ModJar.Build(ModJar.Text("fabric.mod.json",
+            """{ "id": "inner-lib", "name": "Inner", "version": "2.0", "depends": { "minecraft": ">=1.20" } }"""));
+        var outer = ModJar.Build(
+            ModJar.Text("fabric.mod.json", """{ "id": "outer-lib", "version": "1.0" }"""),
+            ("META-INF/jars/inner.jar", inner));
+        var path = ModJar.Write(
+            ModPath("host.jar"),
+            ModJar.Text("fabric.mod.json", """{ "id": "host" }"""),
+            ("META-INF/jars/outer.jar", outer),
+            ("META-INF/jars/no-metadata.jar", ModJar.Build(ModJar.Text("a.txt", "x"))));
+
+        var mod = ModScanner.Read(path);
+
+        Assert.HasCount(2, mod.Embedded);
+        var outerMod = mod.Embedded.Single(e => e.Id == "outer-lib");
+        Assert.AreEqual(path + "!/META-INF/jars/outer.jar", outerMod.FilePath);
+        Assert.AreEqual("outer.jar", outerMod.FileName);
+        Assert.AreEqual("1.0", outerMod.Version);
+        var innerMod = outerMod.Embedded.Single();
+        Assert.AreEqual("inner-lib", innerMod.Id);
+        Assert.AreEqual("Inner", innerMod.Name);
+        Assert.AreEqual("2.0", innerMod.Version);
+        Assert.AreEqual(">=1.20", innerMod.Dependencies.Single(d => d.Id == "minecraft").VersionRange);
+        Assert.IsNull(mod.Embedded.Single(e => e.FileName == "no-metadata.jar").Id);
+    }
+
+    [TestMethod]
     public void Read_CollectsIdsOfJarJarMods()
     {
         var library = ModJar.Build(ModJar.Text("META-INF/mods.toml", "[[mods]]\nmodId=\"flywheel\"\nversion=\"1\""));
