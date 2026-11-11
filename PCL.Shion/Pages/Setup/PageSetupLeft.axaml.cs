@@ -17,7 +17,7 @@ namespace PCL.Shion.Pages.Setup;
 
 public partial class PageSetupLeft : MyPageLeft
 {
-    private const string ShionIssuesUrl = "https://github.com/Mar7thLover/PCL-Shion/issues";
+    private const string ShionIssuesUrl = "https://github.com/OrihaWeave/PCL-Shion/issues";
 
     private static AppSettings Settings => App.Services.Settings;
 

@@ -15,8 +15,8 @@ public sealed class UpdateCheckerTest
     private const string ReleasesJson = """
         [
           {
-            "url": "https://api.github.com/repos/Mar7thLover/PCL-Shion/releases/300003",
-            "html_url": "https://github.com/Mar7thLover/PCL-Shion/releases/tag/v0.3.0-beta.1",
+            "url": "https://api.github.com/repos/OrihaWeave/PCL-Shion/releases/300003",
+            "html_url": "https://github.com/OrihaWeave/PCL-Shion/releases/tag/v0.3.0-beta.1",
             "id": 300003,
             "author": { "login": "Mar7thLover", "id": 1, "type": "User", "site_admin": false },
             "tag_name": "v0.3.0-beta.1",
@@ -30,8 +30,8 @@ public sealed class UpdateCheckerTest
             "body": "Beta release."
           },
           {
-            "url": "https://api.github.com/repos/Mar7thLover/PCL-Shion/releases/300002",
-            "html_url": "https://github.com/Mar7thLover/PCL-Shion/releases/tag/v0.2.0",
+            "url": "https://api.github.com/repos/OrihaWeave/PCL-Shion/releases/300002",
+            "html_url": "https://github.com/OrihaWeave/PCL-Shion/releases/tag/v0.2.0",
             "id": 300002,
             "author": { "login": "Mar7thLover", "id": 1, "type": "User", "site_admin": false },
             "tag_name": "v0.2.0",
@@ -42,13 +42,13 @@ public sealed class UpdateCheckerTest
             "created_at": "2026-10-10T07:00:00Z",
             "published_at": "2026-10-10T07:30:00Z",
             "assets": [
-              { "name": "PCL.Shion-win-x64.zip", "size": 52428800, "browser_download_url": "https://github.com/Mar7thLover/PCL-Shion/releases/download/v0.2.0/PCL.Shion-win-x64.zip" }
+              { "name": "PCL.Shion-win-x64.zip", "size": 52428800, "browser_download_url": "https://github.com/OrihaWeave/PCL-Shion/releases/download/v0.2.0/PCL.Shion-win-x64.zip" }
             ],
             "body": "Second release."
           },
           {
-            "url": "https://api.github.com/repos/Mar7thLover/PCL-Shion/releases/300001",
-            "html_url": "https://github.com/Mar7thLover/PCL-Shion/releases/tag/v0.1.0",
+            "url": "https://api.github.com/repos/OrihaWeave/PCL-Shion/releases/300001",
+            "html_url": "https://github.com/OrihaWeave/PCL-Shion/releases/tag/v0.1.0",
             "id": 300001,
             "author": { "login": "Mar7thLover", "id": 1, "type": "User", "site_admin": false },
             "tag_name": "v0.1.0",
@@ -89,7 +89,7 @@ public sealed class UpdateCheckerTest
         Assert.AreEqual("v0.2.0", release.Tag);
         Assert.AreEqual(new Version(0, 2, 0), release.Version);
         Assert.AreEqual("PCL Shion 0.2.0", release.Name);
-        Assert.AreEqual(new Uri("https://github.com/Mar7thLover/PCL-Shion/releases/tag/v0.2.0"), release.HtmlUrl);
+        Assert.AreEqual(new Uri("https://github.com/OrihaWeave/PCL-Shion/releases/tag/v0.2.0"), release.HtmlUrl);
         Assert.AreEqual(new DateTimeOffset(2026, 10, 10, 7, 30, 0, TimeSpan.Zero), release.PublishedAt);
         Assert.IsFalse(release.Prerelease);
     }
@@ -254,7 +254,7 @@ public sealed class UpdateCheckerTest
             {
               "tag_name": {{JsonSerializer.Serialize(tag)}},
               "name": {{JsonSerializer.Serialize(name)}},
-              "html_url": "https://github.com/Mar7thLover/PCL-Shion/releases/tag/{{tag}}",
+              "html_url": "https://github.com/OrihaWeave/PCL-Shion/releases/tag/{{tag}}",
               "draft": {{JsonSerializer.Serialize(draft)}},
               "prerelease": {{JsonSerializer.Serialize(prerelease)}},
               "published_at": {{JsonSerializer.Serialize(publishedAt)}}

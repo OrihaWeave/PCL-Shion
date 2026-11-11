@@ -6,13 +6,13 @@
 
 # PCL Shion
 
-[![Stars](https://img.shields.io/github/stars/Mar7thLover/PCL-Shion?style=for-the-badge&label=stars&labelColor=444444&color=eac54f&logo=github)](https://github.com/Mar7thLover/PCL-Shion/)
-[![Last commit](https://img.shields.io/github/last-commit/Mar7thLover/PCL-Shion/dev?style=for-the-badge&label=last%20commit&labelColor=444444&logo=github)](https://github.com/Mar7thLover/PCL-Shion/commits/dev)
-[![Issues](https://img.shields.io/github/issues/Mar7thLover/PCL-Shion?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/Mar7thLover/PCL-Shion/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/Mar7thLover/PCL-Shion?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/Mar7thLover/PCL-Shion/pulls)
+[![Stars](https://img.shields.io/github/stars/OrihaWeave/PCL-Shion?style=for-the-badge&label=stars&labelColor=444444&color=eac54f&logo=github)](https://github.com/OrihaWeave/PCL-Shion/)
+[![Last commit](https://img.shields.io/github/last-commit/OrihaWeave/PCL-Shion/dev?style=for-the-badge&label=last%20commit&labelColor=444444&logo=github)](https://github.com/OrihaWeave/PCL-Shion/commits/dev)
+[![Issues](https://img.shields.io/github/issues/OrihaWeave/PCL-Shion?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/OrihaWeave/PCL-Shion/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/OrihaWeave/PCL-Shion?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/OrihaWeave/PCL-Shion/pulls)
 
-[Download](https://github.com/Mar7thLover/PCL-Shion/releases) |
-[Report a bug or suggest a feature](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose) |
+[Download](https://github.com/OrihaWeave/PCL-Shion/releases) |
+[Report a bug or suggest a feature](https://github.com/OrihaWeave/PCL-Shion/issues/new/choose) |
 [Discord](https://discord.gg/rvF5tW8cj) |
 [Contributing](CONTRIBUTING.md)
 
@@ -20,7 +20,7 @@
 
 PCL Shion (詩音) is a **third-party modified version**, independently developed from [PCL Community Edition (PCL CE)](https://github.com/PCL-Community/PCL-CE), which is itself based on [Plain Craft Launcher](https://github.com/Meloong-Git/PCL) by LTCat (龙腾猫跃).
 
-This project is not affiliated with the official PCL or the PCL CE community. **Please do not report issues with this project to the official repository or to the PCL CE community.** Use [this repository's Issues](https://github.com/Mar7thLover/PCL-Shion/issues) instead.
+This project is not affiliated with the official PCL or the PCL CE community. **Please do not report issues with this project to the official repository or to the PCL CE community.** Use [this repository's Issues](https://github.com/OrihaWeave/PCL-Shion/issues) instead.
 
 > [!WARNING]
 > This project is under **heavy development**. Features and UI change frequently and may be unstable.
@@ -35,7 +35,7 @@ PCL Shion has removed this restriction entirely, so downloading and installing w
 
 ### 🚀 Actively developed, feature suggestions welcome
 
-Upstream PCL CE has entered maintenance mode and no longer accepts feature requests. PCL Shion keeps adding new features, and **any reasonable feature suggestion is welcome**. Just [open an issue](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose).
+Upstream PCL CE has entered maintenance mode and no longer accepts feature requests. PCL Shion keeps adding new features, and **any reasonable feature suggestion is welcome**. Just [open an issue](https://github.com/OrihaWeave/PCL-Shion/issues/new/choose).
 
 ## 🗺️ Roadmap
 
@@ -63,7 +63,7 @@ See the [.NET 10 OS support list](https://github.com/dotnet/core/blob/main/relea
 
 ## 📦 Choose a Download
 
-Select the matching asset from [Releases](https://github.com/Mar7thLover/PCL-Shion/releases/latest). Beta builds replace `Release` with `Beta`. **Every package requires a separately installed .NET 10 Runtime.**
+Select the matching asset from [Releases](https://github.com/OrihaWeave/PCL-Shion/releases/latest). Beta builds replace `Release` with `Beta`. **Every package requires a separately installed .NET 10 Runtime.**
 
 | Platform | File name |
 |---|---|
@@ -112,8 +112,8 @@ See [Contributing](CONTRIBUTING.md) for framework-dependent publishing and packa
 
 ## 🌟 Statistics
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Mar7thLover/PCL-Shion&type=Date)](https://www.star-history.com/#Mar7thLover/PCL-Shion&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=OrihaWeave/PCL-Shion&type=Date)](https://www.star-history.com/#OrihaWeave/PCL-Shion&Date)
 
 ## ❤️ Contributors
 
-[![](https://contrib.rocks/image?repo=Mar7thLover/PCL-Shion)](https://github.com/Mar7thLover/PCL-Shion/graphs/contributors)
+[![](https://contrib.rocks/image?repo=OrihaWeave/PCL-Shion)](https://github.com/OrihaWeave/PCL-Shion/graphs/contributors)

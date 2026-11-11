@@ -12,7 +12,7 @@ namespace PCL.Shion.Pages.Setup;
 
 public partial class PageSetupUpdate : MyPageRight
 {
-    private const string ShionReleasesUrl = "https://github.com/Mar7thLover/PCL-Shion/releases";
+    private const string ShionReleasesUrl = "https://github.com/OrihaWeave/PCL-Shion/releases";
 
     /// <summary>“前往下载页面”按钮要打开的地址，检查到新版本时指向该版本的发布页。</summary>
     private string _releaseUrl = ShionReleasesUrl;

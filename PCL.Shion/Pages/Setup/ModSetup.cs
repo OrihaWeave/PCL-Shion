@@ -21,7 +21,7 @@ namespace PCL.Shion.Pages.Setup;
 public static class ModSetup
 {
     // 与 PageSetupUI 中的反馈地址保持一致
-    private const string ShionIssuesUrl = "https://github.com/Mar7thLover/PCL-Shion/issues";
+    private const string ShionIssuesUrl = "https://github.com/OrihaWeave/PCL-Shion/issues";
 
     /// <summary>
     ///     按配置键名应用设置。存在同名的一参数方法时调用它并返回 true，否则返回 false。

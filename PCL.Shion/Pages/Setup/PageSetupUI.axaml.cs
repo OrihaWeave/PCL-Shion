@@ -398,7 +398,7 @@ public partial class PageSetupUI : MyPageRight
         CardCustom.TriggerForceResize();
     }
 
-    private const string ShionIssuesUrl = "https://github.com/Mar7thLover/PCL-Shion/issues";
+    private const string ShionIssuesUrl = "https://github.com/OrihaWeave/PCL-Shion/issues";
 
     // 背景图片
     private void BtnUIBgOpen_Click(object? sender, PointerReleasedEventArgs e)

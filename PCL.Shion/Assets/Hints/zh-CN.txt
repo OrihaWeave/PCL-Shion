@@ -1001,7 +1001,7 @@ PCL Shion 已实现官方 PCL 中的部分百宝箱功能，如今日人品、�
 
 PCL Shion 支持日志查看与导出，方便用户提交 BUG 时附带详细日志。  
 
-PCL Shion 暂不提供应用内更新，新版本请前往 https://github.com/Mar7thLover/PCL-Shion/releases 下载。
+PCL Shion 暂不提供应用内更新，新版本请前往 https://github.com/OrihaWeave/PCL-Shion/releases 下载。
 
 PCL Shion 支持深色模式，在晚上偷玩 Minecraft 时再也不会被亮瞎眼了。
 

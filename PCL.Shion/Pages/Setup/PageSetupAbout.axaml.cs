@@ -22,7 +22,7 @@ namespace PCL.Shion.Pages.Setup;
 
 public partial class PageSetupAbout : MyPageRight
 {
-    private const string ShionApiRepoUrl = "https://api.github.com/repos/Mar7thLover/PCL-Shion";
+    private const string ShionApiRepoUrl = "https://api.github.com/repos/OrihaWeave/PCL-Shion";
 
     /// <summary>
     ///     PCL Shion 使用的第三方组件及其许可证。

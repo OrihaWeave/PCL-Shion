@@ -258,7 +258,7 @@ jobs:
         with:
           inputs: ./dist/*
           verify: true
-          verify-cert-identity: https://github.com/Mar7thLover/PCL-Shion/.github/workflows/release-publish.yml@refs/heads/dev
+          verify-cert-identity: https://github.com/OrihaWeave/PCL-Shion/.github/workflows/release-publish.yml@refs/heads/dev
           verify-oidc-issuer: https://token.actions.githubusercontent.com
 
       - name: Store verified signed packages

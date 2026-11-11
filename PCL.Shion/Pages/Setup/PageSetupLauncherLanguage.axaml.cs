@@ -24,7 +24,7 @@ public partial class PageSetupLauncherLanguage : MyPageRight
         PanScroll = PanBack; // 不知道为啥不能在 XAML 设置
         Loaded += PageSetupLauncherLanguage_Loaded;
         BtnTranslateWebsite.Click += (_, _) => SystemShell.OpenUrl("https://translate.pclc.cc/projects/pcl-ce/");
-        BtnSubmitPullRequest.Click += (_, _) => SystemShell.OpenUrl("https://github.com/Mar7thLover/PCL-Shion/pulls");
+        BtnSubmitPullRequest.Click += (_, _) => SystemShell.OpenUrl("https://github.com/OrihaWeave/PCL-Shion/pulls");
     }
 
     private void PageSetupLauncherLanguage_Loaded(object? sender, RoutedEventArgs e)

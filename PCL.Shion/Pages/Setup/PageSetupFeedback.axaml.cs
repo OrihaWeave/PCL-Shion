@@ -18,7 +18,7 @@ namespace PCL.Shion.Pages.Setup;
 
 public partial class PageSetupFeedback : MyPageRight
 {
-    private const string ShionApiRepoUrl = "https://api.github.com/repos/Mar7thLover/PCL-Shion";
+    private const string ShionApiRepoUrl = "https://api.github.com/repos/OrihaWeave/PCL-Shion";
 
     public enum TagId : long
     {
