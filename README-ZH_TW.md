@@ -6,13 +6,13 @@
 
 # PCL 詩音（Shion）
 
-[![Stars](https://img.shields.io/github/stars/Mar7thLover/PCL-Shion?style=for-the-badge&label=stars&labelColor=444444&color=eac54f&logo=github)](https://github.com/Mar7thLover/PCL-Shion/)
-[![Last commit](https://img.shields.io/github/last-commit/Mar7thLover/PCL-Shion/dev?style=for-the-badge&label=last%20commit&labelColor=444444&logo=github)](https://github.com/Mar7thLover/PCL-Shion/commits/dev)
-[![Issues](https://img.shields.io/github/issues/Mar7thLover/PCL-Shion?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/Mar7thLover/PCL-Shion/issues)
-[![Pull requests](https://img.shields.io/github/issues-pr/Mar7thLover/PCL-Shion?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/Mar7thLover/PCL-Shion/pulls)
+[![Stars](https://img.shields.io/github/stars/OrihaWeave/PCL-Shion?style=for-the-badge&label=stars&labelColor=444444&color=eac54f&logo=github)](https://github.com/OrihaWeave/PCL-Shion/)
+[![Last commit](https://img.shields.io/github/last-commit/OrihaWeave/PCL-Shion/dev?style=for-the-badge&label=last%20commit&labelColor=444444&logo=github)](https://github.com/OrihaWeave/PCL-Shion/commits/dev)
+[![Issues](https://img.shields.io/github/issues/OrihaWeave/PCL-Shion?style=for-the-badge&label=issues&labelColor=444444&color=1F883D&logo=github)](https://github.com/OrihaWeave/PCL-Shion/issues)
+[![Pull requests](https://img.shields.io/github/issues-pr/OrihaWeave/PCL-Shion?style=for-the-badge&label=pull%20requests&labelColor=444444&color=1F883D&logo=github)](https://github.com/OrihaWeave/PCL-Shion/pulls)
 
-[下載](https://github.com/Mar7thLover/PCL-Shion/releases) |
-[回報問題或建議](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose) |
+[下載](https://github.com/OrihaWeave/PCL-Shion/releases) |
+[回報問題或建議](https://github.com/OrihaWeave/PCL-Shion/issues/new/choose) |
 [Discord 社群](https://discord.gg/rvF5tW8cj) |
 [貢獻指南](CONTRIBUTING.md)
 
@@ -20,7 +20,7 @@
 
 PCL 詩音（Shion）是基於 [PCL 社群版（PCL CE）](https://github.com/PCL-Community/PCL-CE) 獨立進行二次開發的**第三方修改版**，PCL CE 則源自龍騰貓躍的 [Plain Craft Launcher](https://github.com/Meloong-Git/PCL)。
 
-本專案與 PCL 官方、PCL CE 社群均無隸屬關係，**請不要向官方倉庫或 PCL CE 社群回報本專案的問題**，有問題請在 [本倉庫的 Issues](https://github.com/Mar7thLover/PCL-Shion/issues) 提出。
+本專案與 PCL 官方、PCL CE 社群均無隸屬關係，**請不要向官方倉庫或 PCL CE 社群回報本專案的問題**，有問題請在 [本倉庫的 Issues](https://github.com/OrihaWeave/PCL-Shion/issues) 提出。
 
 > [!WARNING]
 > 本專案正處於**密集開發階段**，功能與介面變動頻繁，可能出現不穩定的情況。
@@ -35,7 +35,7 @@ PCL 詩音已完整移除這套限制，所有地區的使用者都可以正常�
 
 ### 🚀 銳意開發，歡迎新功能建議
 
-上游 PCL CE 已進入維護階段，不再受理新功能請求；PCL 詩音則會持續開發新功能，**歡迎任何合理的新功能建議**，請直接 [提交 Issue](https://github.com/Mar7thLover/PCL-Shion/issues/new/choose)。
+上游 PCL CE 已進入維護階段，不再受理新功能請求；PCL 詩音則會持續開發新功能，**歡迎任何合理的新功能建議**，請直接 [提交 Issue](https://github.com/OrihaWeave/PCL-Shion/issues/new/choose)。
 
 ## 🗺️ 開發計畫
 
@@ -63,7 +63,7 @@ PCL 詩音已完整移除這套限制，所有地區的使用者都可以正常�
 
 ## 📦 下載哪個檔案
 
-在 [Releases](https://github.com/Mar7thLover/PCL-Shion/releases/latest) 頁面的 Assets 中依下表選擇；Beta 使用相同命名，將 `Release` 換成 `Beta`。所有包均需預先安裝 .NET 10 Runtime。
+在 [Releases](https://github.com/OrihaWeave/PCL-Shion/releases/latest) 頁面的 Assets 中依下表選擇；Beta 使用相同命名，將 `Release` 換成 `Beta`。所有包均需預先安裝 .NET 10 Runtime。
 
 | 系統 | 檔案名稱 |
 |---|---|
@@ -112,8 +112,8 @@ dotnet test PCL.Shion.Test/PCL.Shion.Test.csproj -c Release
 
 ## 🌟 統計資料
 
-[![Star History Chart](https://api.star-history.com/svg?repos=Mar7thLover/PCL-Shion&type=Date)](https://www.star-history.com/#Mar7thLover/PCL-Shion&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=OrihaWeave/PCL-Shion&type=Date)](https://www.star-history.com/#OrihaWeave/PCL-Shion&Date)
 
 ## ❤️ 貢獻者
 
-[![](https://contrib.rocks/image?repo=Mar7thLover/PCL-Shion)](https://github.com/Mar7thLover/PCL-Shion/graphs/contributors)
+[![](https://contrib.rocks/image?repo=OrihaWeave/PCL-Shion)](https://github.com/OrihaWeave/PCL-Shion/graphs/contributors)

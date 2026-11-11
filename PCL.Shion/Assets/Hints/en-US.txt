@@ -1001,7 +1001,7 @@ PCL Shion has implemented some of the official PCL's toolbox features, such as m
 
 PCL Shion supports log viewing and exporting, making it easy for users to submit detailed logs when reporting bugs.
 
-PCL Shion does not provide in-app updates yet. Download new versions from https://github.com/Mar7thLover/PCL-Shion/releases.
+PCL Shion does not provide in-app updates yet. Download new versions from https://github.com/OrihaWeave/PCL-Shion/releases.
 
 PCL Shion supports dark mode, so your eyes won't be blinded when sneaking in some Minecraft gaming at night.
 

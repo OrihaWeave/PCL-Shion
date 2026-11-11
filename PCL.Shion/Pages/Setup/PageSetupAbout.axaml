@@ -84,7 +84,7 @@
                         Grid.Row="2"
                         Grid.Column="2"
                         Height="35"
-                        Tag="https://github.com/Mar7thLover/PCL-Shion"
+                        Tag="https://github.com/OrihaWeave/PCL-Shion"
                         Click="OpenUrlButton_Click"
                         Text="{loc:L Setup.About.SourceCode}" />
                 </Grid>
@@ -269,7 +269,7 @@
                     <c:MyTextButton
                         Grid.Row="2"
                         HorizontalAlignment="Center"
-                        Tag="https://github.com/Mar7thLover/PCL-Shion/graphs/contributors"
+                        Tag="https://github.com/OrihaWeave/PCL-Shion/graphs/contributors"
                         Click="OpenUrlTextButton_Click"
                         Text="{loc:L Setup.About.Contributors.ViewMore}" />
                 </Grid>

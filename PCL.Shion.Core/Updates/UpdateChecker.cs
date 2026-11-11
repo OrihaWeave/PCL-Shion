@@ -12,7 +12,7 @@ public static class UpdateChecker
     /// <summary>
     /// 发布列表的 API 地址。
     /// </summary>
-    public const string LatestReleaseApi = "https://api.github.com/repos/Mar7thLover/PCL-Shion/releases";
+    public const string LatestReleaseApi = "https://api.github.com/repos/OrihaWeave/PCL-Shion/releases";
 
     /// <summary>
     /// 获取版本号最高的已发布版本；没有可用的版本时返回 null。

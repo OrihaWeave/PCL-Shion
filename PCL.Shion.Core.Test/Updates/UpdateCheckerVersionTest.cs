@@ -77,7 +77,7 @@ public sealed class UpdateCheckerVersionTest
             tag,
             Version.Parse(version),
             tag,
-            new Uri($"https://github.com/Mar7thLover/PCL-Shion/releases/tag/{tag}"),
+            new Uri($"https://github.com/OrihaWeave/PCL-Shion/releases/tag/{tag}"),
             new DateTimeOffset(2026, 10, 1, 8, 0, 0, TimeSpan.Zero),
             prerelease);
     }
